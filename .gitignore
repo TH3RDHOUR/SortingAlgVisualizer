@@ -1,0 +1,8 @@
+build/
+.vscode/
+.DS_Store
+*.exe
+*.dll
+*.so
+*.dylib
+compile_commands.json
