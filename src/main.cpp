@@ -3,21 +3,41 @@
 
 int main(int argc, char* argv[])
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (!SDL_Init(SDL_INIT_VIDEO))
     {
         std::cout << "SDL failed to initialize\n";
         return 1;
     }
 
     SDL_Window* window = SDL_CreateWindow(
-        "SDL3 Window",
+        "Sorting Visualizer",
         800,
         600,
         0
     );
 
-    SDL_Delay(3000);
+    if (!window)
+    {
+        std::cout << "Window failed to create\n";
+        return 1;
+    }
 
+    bool running = true;
+    SDL_Event event;
+
+    while (running)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_EVENT_QUIT)
+            {
+                running = false;
+            }
+        }
+
+        SDL_Delay(16); // ~60fps
+    }
+    
     SDL_DestroyWindow(window);
     SDL_Quit();
 
