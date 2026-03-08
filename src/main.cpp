@@ -3,6 +3,11 @@
 #include <cstdlib>
 #include <vector>
 
+void bubbleSort(std::vector<sf::RectangleShape>& rectangles)
+{
+    return;
+}
+
 int main()
 {
     // Create the window.
@@ -15,7 +20,7 @@ int main()
     {
         rectangles[i].setSize(sf::Vector2f(20, (float)((rand() % 50) + 1)));
 
-        // Gte window height for rectangles to be on bottom.
+        // Get window height for rectangles to be on bottom.
         float windowHeight = window.getSize().y;
         // Space out rectangles & set height based on bottom of the screen size.
         rectangles[i].setPosition(sf::Vector2f(i * 25, windowHeight - rectangles[i].getSize().y));
@@ -41,5 +46,7 @@ int main()
 
         // Take what is drawn and show on the Window.
         window.display();
+
+        bubbleSort(rectangles);
     }
 }
