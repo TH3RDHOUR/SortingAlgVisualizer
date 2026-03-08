@@ -1,10 +1,26 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <cstdlib>
+#include <vector>
 
 int main()
 {
     // Create the window.
     sf::RenderWindow window(sf::VideoMode({800, 600}), "Sorting Visualizer");
+
+    // Vector of rectange objects.
+    std::vector<sf::RectangleShape> rectangles(32);
+
+    for (int i = 0; i < 32; ++i)
+    {
+        rectangles[i].setSize(sf::Vector2f(20, (float)((rand() % 50) + 1)));
+
+        // Gte window height for rectangles to be on bottom.
+        float windowHeight = window.getSize().y;
+        // Space out rectangles & set height based on bottom of the screen size.
+        rectangles[i].setPosition(sf::Vector2f(i * 25, windowHeight - rectangles[i].getSize().y));
+        rectangles[i].setFillColor(sf::Color::White);
+    }
 
     while (window.isOpen())
     {
@@ -18,10 +34,10 @@ int main()
         // Clear the window with black color
         window.clear(sf::Color::Black);
 
-        // Create Rectangle .
-        sf::RectangleShape rectangle({50.0f, 120.0f});
-
-        window.draw(rectangle);
+        for (const auto& rectangle : rectangles)
+        {
+            window.draw(rectangle);
+        }
 
         // Take what is drawn and show on the Window.
         window.display();
