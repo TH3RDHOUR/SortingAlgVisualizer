@@ -3,9 +3,10 @@
 #include <random>
 #include <vector>
 
+void initVector(std::vector<int>& arr, std::mt19937& gen);
 void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, int currentIndex1, 
                 int currentIndex2, int sortedStart, bool sorting, bool sorted);
-bool bubbleSortStep(std::vector<int>& arr, int& i, int& j);
+bool bubbleSort(std::vector<int>& arr, int& i, int& j);
 
 int main()
 {
@@ -30,19 +31,15 @@ int main()
     std::random_device rd;
     // Initializae the random number generator.
     std::mt19937 gen(rd());
-    // Define the number distribution.
-    std::uniform_int_distribution<> distrib(1, 500);
 
-    for (int i = 0; i < size; ++i)
-    {
-        arr[i] = distrib(gen);
-    }
+    initVector(arr, gen);
 
     while (window.isOpen())
     {
         // Check Window events triggered since last iteration of the loop.
         while (auto event = window.pollEvent())
         {
+            // If the window is closed.
             if (event->is<sf::Event::Closed>())
                 window.close();
 
@@ -54,24 +51,48 @@ int main()
                 window.setView(sf::View(visibleArea));
             }
 
+            // If a key is pressed.
             if (auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
             {
+                // Number zero pressed, reset the array & window.
                 if (keyEvent->code == sf::Keyboard::Key::Num0)
                 {
+                    sorting = false;
+                    sorted = false;
+                    i = 0;
+                    j = 0;
+                    initVector(arr, gen);
+                }
+
+                // Number 1 pressed, Bubble Sort.
+                else if (keyEvent->code == sf::Keyboard::Key::Num1)
+                {
                     sorting = true;
-                    std::cout << "Pressed Zero!" << std::endl;
                 }
             }
         }
 
+        // Keep sorting while there is still numbers to sort.
         if (sorting)
         {
-            sorting = bubbleSortStep(arr, i, j);
+            sorting = bubbleSort(arr, i, j);
             if (!sorting)
                 sorted = true;
         }
 
         drawVector(arr, window, j, j + 1, arr.size() - i, sorting, sorted);
+    }
+}
+
+void initVector(std::vector<int>& arr, std::mt19937& gen)
+{
+    // Define the number distribution.
+    std::uniform_int_distribution<> distrib(1, 500);
+
+    // Fill the array with random numbers.
+    for (int& num : arr)
+    {
+        num = distrib(gen);
     }
 }
 
@@ -117,7 +138,7 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
     sf::sleep(sf::milliseconds(10));
 }
 
-bool bubbleSortStep(std::vector<int>& arr, int& i, int& j)
+bool bubbleSort(std::vector<int>& arr, int& i, int& j)
 {
     // Sorting is finished.
     if (i >= arr.size() - 1)
