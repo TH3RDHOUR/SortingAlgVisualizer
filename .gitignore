@@ -6,3 +6,6 @@ build/
 *.so
 *.dylib
 compile_commands.json
+
+# Dear ImGui artifacts
+imgui.ini

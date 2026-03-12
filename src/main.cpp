@@ -15,7 +15,15 @@ int main()
     // Create the window.
     sf::RenderWindow window(sf::VideoMode({800, 600}), "Sorting Visualizer");
     // Slow down Framerate to see the swaps take place.
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(120);
+
+    // Initialize IMGUI-SFML.
+    ImGui::SFML::Init(window);
+
+    // GUI variables.
+    float stepDelay = 0.05f;
+    float speed = 20.0f;
+    float timer = 0.0f;
 
     // Sorting variables.
     bool sorting = false;
@@ -36,11 +44,16 @@ int main()
 
     initVector(arr, gen);
 
+    sf::Clock deltaClock;
+
     while (window.isOpen())
     {
         // Check Window events triggered since last iteration of the loop.
         while (auto event = window.pollEvent())
         {
+            // Pass events to ImGui-SFML event processor
+            ImGui::SFML::ProcessEvent(window, event.value());
+
             // If the window is closed.
             if (event->is<sf::Event::Closed>())
                 window.close();
@@ -73,17 +86,51 @@ int main()
                 }
             }
         }
+        // Restart the clock once per frame.
+        sf::Time dt = deltaClock.restart();
+
+        // Update ImGui.
+        ImGui::SFML::Update(window, dt);
+
+        // Build ImGui UI (including the slider)
+        ImGui::Begin("Sorting Speed Controller"); // Start a new ImGui window
+
+        // Add the slider widget
+        ImGui::SliderFloat("Sort Speed (ops/sec)", &speed, 1.0f, 500.0f);
+
+        ImGui::Text("Current slider value: %.3f", stepDelay);
+
+        ImGui::End();
+
+        float deltaTime = dt.asSeconds();
+        stepDelay = 1.0f / speed;
 
         // Keep sorting while there is still numbers to sort.
         if (sorting)
         {
-            sorting = bubbleSort(arr, i, j);
-            if (!sorting)
-                sorted = true;
+            timer += deltaTime;
+
+            while (timer >= stepDelay)
+            {
+                sorting = bubbleSort(arr, i, j);
+                if (!sorting)
+                {
+                    sorted = true;
+                }
+                timer -= stepDelay;
+            }
         }
 
         drawVector(arr, window, j, j + 1, arr.size() - i, sorting, sorted);
+
+        // Render ImGui Content.
+        ImGui::SFML::Render(window);
+
+        // Render SFML content.
+        window.display();
     }
+
+    ImGui::SFML::Shutdown();
 }
 
 void initVector(std::vector<int>& arr, std::mt19937& gen)
@@ -102,14 +149,15 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
                 int currentIndex1, int currentIndex2, int sortedStart, 
                 bool sorting, bool sorted)
 {
+    // Get window height & width for sizing/re-sizing.
+    float windowHeight = window.getSize().y;
+    float windowWidth = window.getSize().x;
+    float rectWidth = windowWidth / arr.size();
+
     window.clear();
+
     for (int i = 0; i < arr.size(); ++i)
     {
-        // Get window height & width for sizing/re-sizing.
-        float windowHeight = window.getSize().y;
-        float windowWidth = window.getSize().x;
-        float rectWidth = windowWidth / arr.size();
-
         sf::RectangleShape rectangle(sf::Vector2f(20, arr[i]));
         rectangle.setSize(sf::Vector2f(rectWidth - 5.f, arr[i]));
 
@@ -136,8 +184,6 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
 
         window.draw(rectangle);
     }
-    window.display();
-    sf::sleep(sf::milliseconds(10));
 }
 
 bool bubbleSort(std::vector<int>& arr, int& i, int& j)
