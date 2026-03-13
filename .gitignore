@@ -1,6 +1,13 @@
+# Build directory
 build/
+
+#VSCode files
 .vscode/
+
+# MacOS related files
 .DS_Store
+
+# Executables
 *.exe
 *.dll
 *.so

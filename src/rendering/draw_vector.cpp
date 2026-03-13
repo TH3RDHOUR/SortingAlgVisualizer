@@ -10,8 +10,6 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
     float windowWidth = window.getSize().x;
     float rectWidth = windowWidth / arr.size();
 
-    window.clear();
-
     for (int i = 0; i < arr.size(); ++i)
     {
         sf::RectangleShape rectangle(sf::Vector2f(20, arr[i]));
@@ -23,6 +21,7 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
         // If sorting & comparing rects turn red, already sorted turn green, otherwise white.
         if (!sorting && sorted)
         {
+            // Make sure the final rectangles are changed to green after finished.
             rectangle.setFillColor(sf::Color::Green); // All done.
         }
         else if (sorting && (i == currentIndex1 || i == currentIndex2))
