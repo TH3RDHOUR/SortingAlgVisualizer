@@ -12,13 +12,31 @@ bool bubbleSort(std::vector<int>& arr, int& i, int& j);
 
 int main()
 {
+    // Get current Monitor resolution
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+
+    // Reduce the window size to around 90%.
+    sf::Vector2u windowSize = desktopMode.size;
+    unsigned int windowWidth = windowSize.x * 0.9f;
+    unsigned int windowHeight = windowSize.y * 0.85f;
+
     // Create the window.
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "Sorting Visualizer");
+    sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Sorting Visualizer");
     // Slow down Framerate to see the swaps take place.
     window.setFramerateLimit(120);
 
+    // Center the screen.
+    window.setPosition(sf::Vector2i(
+        (windowSize.x - windowWidth) / 2,
+        (windowSize.y - windowHeight) / 2
+  ));
+
     // Initialize IMGUI-SFML.
     ImGui::SFML::Init(window);
+
+    // Make ImGui text larger.
+    ImGui::GetIO().FontGlobalScale = 1.6f;
+    ImGui::GetStyle().ScaleAllSizes(1.4f);
 
     // GUI variables.
     float stepDelay = 0.05f;
@@ -98,7 +116,7 @@ int main()
         // Add the slider widget
         ImGui::SliderFloat("Sort Speed (ops/sec)", &speed, 1.0f, 500.0f);
 
-        ImGui::Text("Current slider value: %.3f", stepDelay);
+        ImGui::Text("Current slider value: %.3f", speed);
 
         ImGui::End();
 
