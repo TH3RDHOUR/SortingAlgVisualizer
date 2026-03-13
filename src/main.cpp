@@ -1,14 +1,21 @@
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
+
 #include <random>
 #include <vector>
 
-void initVector(std::vector<int>& arr, std::mt19937& gen);
-void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, int currentIndex1, 
-                int currentIndex2, int sortedStart, bool sorting, bool sorted);
-bool bubbleSort(std::vector<int>& arr, int& i, int& j);
+#include "sorting/bubble_sort.h"
+#include "utils/init_vector.h"
+#include "rendering/draw_vector.h"
+
+
+// void initVector(std::vector<int>& arr, std::mt19937& gen);
+// void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, int currentIndex1, 
+//                 int currentIndex2, int sortedStart, bool sorting, bool sorted);
+// bool bubbleSort(std::vector<int>& arr, int& i, int& j);
 
 int main()
 {
@@ -120,6 +127,7 @@ int main()
 
         ImGui::End();
 
+        // Keep track of time elapsed for speed of sorting.
         float deltaTime = dt.asSeconds();
         stepDelay = 1.0f / speed;
 
@@ -151,79 +159,81 @@ int main()
     ImGui::SFML::Shutdown();
 }
 
-void initVector(std::vector<int>& arr, std::mt19937& gen)
-{
-    // Define the number distribution.
-    std::uniform_int_distribution<> distrib(1, 500);
+// // Initialize vector with random numbers.
+// void initVector(std::vector<int>& arr, std::mt19937& gen)
+// {
+//     // Define the number distribution.
+//     std::uniform_int_distribution<> distrib(1, 500);
 
-    // Fill the array with random numbers.
-    for (int& num : arr)
-    {
-        num = distrib(gen);
-    }
-}
+//     // Fill the array with random numbers.
+//     for (int& num : arr)
+//     {
+//         num = distrib(gen);
+//     }
+// }
 
-void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, 
-                int currentIndex1, int currentIndex2, int sortedStart, 
-                bool sorting, bool sorted)
-{
-    // Get window height & width for sizing/re-sizing.
-    float windowHeight = window.getSize().y;
-    float windowWidth = window.getSize().x;
-    float rectWidth = windowWidth / arr.size();
+// // Draw the vector, this is where the color changes take place.
+// void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, 
+//                 int currentIndex1, int currentIndex2, int sortedStart, 
+//                 bool sorting, bool sorted)
+// {
+//     // Get window height & width for sizing/re-sizing.
+//     float windowHeight = window.getSize().y;
+//     float windowWidth = window.getSize().x;
+//     float rectWidth = windowWidth / arr.size();
 
-    window.clear();
+//     window.clear();
 
-    for (int i = 0; i < arr.size(); ++i)
-    {
-        sf::RectangleShape rectangle(sf::Vector2f(20, arr[i]));
-        rectangle.setSize(sf::Vector2f(rectWidth - 5.f, arr[i]));
+//     for (int i = 0; i < arr.size(); ++i)
+//     {
+//         sf::RectangleShape rectangle(sf::Vector2f(20, arr[i]));
+//         rectangle.setSize(sf::Vector2f(rectWidth - 5.f, arr[i]));
 
-        // Space out rectangles & set height based on bottom of the screen size.
-        rectangle.setPosition(sf::Vector2f(i * rectWidth, windowHeight - arr[i]));
+//         // Space out rectangles & set height based on bottom of the screen size.
+//         rectangle.setPosition(sf::Vector2f(i * rectWidth, windowHeight - arr[i]));
 
-        // If sorting & comparing rects turn red, already sorted turn green, otherwise white.
-        if (!sorting && sorted)
-        {
-            rectangle.setFillColor(sf::Color::Green); // All done.
-        }
-        else if (sorting && (i == currentIndex1 || i == currentIndex2))
-        {
-            rectangle.setFillColor(sf::Color::Red); // Currently comparing.
-        }
-        else if (i >= sortedStart)
-        {
-            rectangle.setFillColor(sf::Color::Green); // Done sorting.
-        }
-        else
-        {
-            rectangle.setFillColor(sf::Color::White); // Unsorted.
-        }
+//         // If sorting & comparing rects turn red, already sorted turn green, otherwise white.
+//         if (!sorting && sorted)
+//         {
+//             rectangle.setFillColor(sf::Color::Green); // All done.
+//         }
+//         else if (sorting && (i == currentIndex1 || i == currentIndex2))
+//         {
+//             rectangle.setFillColor(sf::Color::Red); // Currently comparing.
+//         }
+//         else if (i >= sortedStart)
+//         {
+//             rectangle.setFillColor(sf::Color::Green); // Done sorting.
+//         }
+//         else
+//         {
+//             rectangle.setFillColor(sf::Color::White); // Unsorted.
+//         }
 
-        window.draw(rectangle);
-    }
-}
+//         window.draw(rectangle);
+//     }
+// }
 
-bool bubbleSort(std::vector<int>& arr, int& i, int& j)
-{
-    // Sorting is finished.
-    if (i >= arr.size() - 1)
-    {
-        return false;
-    }
-    // j has reached the end, restart & increment i.
-    if (j == arr.size() - i - 1)
-    {
-        j = 0;
-        i++;
-        return i < arr.size() - 1;
-    }
-    // if we need to swap the elements.
-    else if (arr[j] > arr[j + 1])
-    {
-        std::swap(arr[j], arr[j + 1]);
-    }
-    // Increment j & return bool of if i has reached the end of vector.
-    j++;
-    return i < arr.size() - 1;
-}
+// bool bubbleSort(std::vector<int>& arr, int& i, int& j)
+// {
+//     // Sorting is finished.
+//     if (i >= arr.size() - 1)
+//     {
+//         return false;
+//     }
+//     // j has reached the end, restart & increment i.
+//     if (j == arr.size() - i - 1)
+//     {
+//         j = 0;
+//         i++;
+//         return i < arr.size() - 1;
+//     }
+//     // if we need to swap the elements.
+//     else if (arr[j] > arr[j + 1])
+//     {
+//         std::swap(arr[j], arr[j + 1]);
+//     }
+//     // Increment j & return bool of if i has reached the end of vector.
+//     j++;
+//     return i < arr.size() - 1;
+// }

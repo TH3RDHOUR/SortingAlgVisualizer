@@ -7,7 +7,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-# Prevent external SFML discovery
 set(SFML_STATIC_LIBRARIES OFF)
 set(IMGUI_SFML_FIND_SFML OFF)
 
@@ -27,7 +26,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(imgui)
 
-# Tell ImGui-SFML where ImGui is
 set(IMGUI_DIR ${imgui_SOURCE_DIR})
 
 # ---------------- ImGui-SFML ----------------
@@ -38,22 +36,22 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(imgui-sfml)
 
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
+# ---------------- Source Files ----------------
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE include)
+# Include directories
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+    include
+)
 
+# Libraries
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
     SFML::Graphics
     SFML::Window
     SFML::System
     ImGui-SFML::ImGui-SFML
-)
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
 )
