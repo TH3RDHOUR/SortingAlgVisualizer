@@ -113,6 +113,9 @@ int main()
         // Update ImGui.
         ImGui::SFML::Update(window, dt);
 
+        // Set ImGui Window size.
+        ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always);
+
         // Build ImGui UI (including the slider)
         ImGui::Begin("Sorting Speed Controller"); // Start a new ImGui window
 
