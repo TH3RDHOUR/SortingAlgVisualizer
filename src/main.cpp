@@ -48,6 +48,10 @@ int main()
     int i = 0;
     int j = 0;
 
+    // Sorting Algorithms.
+    static const char* algs[] = {"Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort"};
+    static int selectedAlg = 0;
+
     // Size of vector.
     int size = 32;
 
@@ -117,6 +121,10 @@ int main()
 
         ImGui::Text("Current slider value: %.3f", speed);
 
+        // Dropdown Algorithm Selector
+        ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
+// TODO: need to implement using the Combo for which algorithm to run instead of number press.
+// Probably will need a start button as well.
         ImGui::End();
 
         // Keep track of time elapsed for speed of sorting.
