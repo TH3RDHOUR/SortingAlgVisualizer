@@ -1,7 +1,14 @@
 #include "sorting/bubble_sort.h"
+#include "sorting/SortAlgorithm.h"
 
+// Constructor.
+BubbleSort::BubbleSort(std::vector<int>& array)
+        : SortAlgorithm(array), i(0), j(0)
+{
+}
 
-bool bubbleSort(std::vector<int>& arr, int& i, int& j)
+// Overloaded method
+bool BubbleSort::step()
 {
     // Sorting is finished.
     if (i >= arr.size() - 1)
@@ -23,4 +30,16 @@ bool bubbleSort(std::vector<int>& arr, int& i, int& j)
     // Increment j & return bool of if i has reached the end of vector.
     j++;
     return i < arr.size() - 1;
+}
+
+// Getters.
+int BubbleSort::getCurrentIndex1() { return j; }
+int BubbleSort::getCurrentIndex2() { return j + 1; }
+int BubbleSort::getSortedStart() { return arr.size() - i; }
+
+// Reset function.
+void BubbleSort::reset()
+{
+    i = 0;
+    j = 0;
 }

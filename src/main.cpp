@@ -8,6 +8,7 @@
 #include "sorting/bubble_sort.h"
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
+#include "sorting/SortAlgorithm.h"
 
 int main()
 {
@@ -45,8 +46,6 @@ int main()
     // Sorting variables.
     bool sorting = false;
     bool sorted = false;
-    int i = 0;
-    int j = 0;
 
     // Sorting Algorithms.
     static const char* algs[] = {"Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort"};
@@ -64,6 +63,8 @@ int main()
     std::mt19937 gen(rd());
 
     initVector(arr, gen);
+
+    BubbleSort bubs(arr);
 
     sf::Clock deltaClock;
 
@@ -95,15 +96,15 @@ int main()
                 {
                     sorting = false;
                     sorted = false;
-                    i = 0;
-                    j = 0;
                     initVector(arr, gen);
+                    bubs.reset();
                 }
 
                 // Number 1 pressed, Bubble Sort.
                 else if (keyEvent->code == sf::Keyboard::Key::Num1)
                 {
                     sorting = true;
+
                 }
             }
         }
@@ -141,7 +142,8 @@ int main()
 
             while (timer >= stepDelay)
             {
-                sorting = bubbleSort(arr, i, j);
+                // sorting = bubbleSort(arr, i, j);
+                sorting = bubs.step();
                 if (!sorting)
                 {
                     sorted = true;
@@ -157,7 +159,8 @@ int main()
         window.resetGLStates();
 
         // Draw all rectangles & objects on the window.
-        drawVector(arr, window, j, j + 1, arr.size() - i, sorting, sorted);
+        drawVector(arr, window, bubs.getCurrentIndex1(), bubs.getCurrentIndex2(), 
+        bubs.getSortedStart(), sorting, sorted);
 
         // Render ImGui Content.
         ImGui::SFML::Render(window);
