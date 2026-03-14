@@ -89,24 +89,24 @@ int main()
             }
 
             // If a key is pressed.
-            if (auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
-            {
-                // Number zero pressed, reset the array & window.
-                if (keyEvent->code == sf::Keyboard::Key::Num0)
-                {
-                    sorting = false;
-                    sorted = false;
-                    initVector(arr, gen);
-                    bubs.reset();
-                }
+            // if (auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
+            // {
+            //     // Number zero pressed, reset the array & window.
+            //     if (keyEvent->code == sf::Keyboard::Key::Num0)
+            //     {
+            //         sorting = false;
+            //         sorted = false;
+            //         initVector(arr, gen);
+            //         bubs.reset();
+            //     }
 
-                // Number 1 pressed, Bubble Sort.
-                else if (keyEvent->code == sf::Keyboard::Key::Num1)
-                {
-                    sorting = true;
+            //     // Number 1 pressed, Bubble Sort.
+            //     else if (keyEvent->code == sf::Keyboard::Key::Num1)
+            //     {
+            //         sorting = true;
 
-                }
-            }
+            //     }
+            // }
         }
         // Restart the clock once per frame.
         sf::Time dt = deltaClock.restart();
@@ -129,6 +129,23 @@ int main()
         ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
 // TODO: need to implement using the Combo for which algorithm to run instead of number press.
 // Probably will need a start button as well.
+        // Sort Button calls the sorting.
+        if (ImGui::Button("Sort"))
+        {
+            sorting = true;
+        }
+
+        ImGui::SameLine();
+
+        // Reset Button resets the vector displayed on screen.
+        if (ImGui::Button("Reset"))
+        {
+            sorting = false;
+            sorted = false;
+            initVector(arr, gen);
+            bubs.reset();
+        }
+
         ImGui::End();
 
         // Keep track of time elapsed for speed of sorting.
