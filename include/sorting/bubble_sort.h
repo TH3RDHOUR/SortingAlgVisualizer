@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-class BubbleSort : SortAlgorithm
+class BubbleSort : public SortAlgorithm
 {
 private:
     int i;
@@ -15,11 +15,10 @@ public:
     BubbleSort(std::vector<int>& arr);
 
     bool step() override;
-    void reset() override;
 
-    int getCurrentIndex1();
-    int getCurrentIndex2();
-    int getSortedStart();
+    int getCurrentIndex1() override;
+    int getCurrentIndex2() override;
+    int getSortedStart() override;
 };
 
 #endif

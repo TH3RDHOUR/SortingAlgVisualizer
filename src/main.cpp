@@ -9,6 +9,7 @@
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
 #include "sorting/SortAlgorithm.h"
+#include "sorting_factory/createAlgorithm.h"
 
 int main()
 {
@@ -32,7 +33,11 @@ int main()
   ));
 
     // Initialize IMGUI-SFML.
-    ImGui::SFML::Init(window);
+    if (!ImGui::SFML::Init(window))
+    {
+        std::cout << "Failed to initialize ImGui Window." << std::endl;
+        return -1;
+    }
 
     // Make ImGui text larger.
     ImGui::GetIO().FontGlobalScale = 1.6f;
@@ -64,7 +69,8 @@ int main()
 
     initVector(arr, gen);
 
-    BubbleSort bubs(arr);
+    // Initial state of object based on first algorithm choice.
+    SortAlgorithm* alg = createAlgorithm(arr, 0);
 
     sf::Clock deltaClock;
 
@@ -87,26 +93,6 @@ int main()
                     {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)});
                 window.setView(sf::View(visibleArea));
             }
-
-            // If a key is pressed.
-            // if (auto* keyEvent = event->getIf<sf::Event::KeyPressed>())
-            // {
-            //     // Number zero pressed, reset the array & window.
-            //     if (keyEvent->code == sf::Keyboard::Key::Num0)
-            //     {
-            //         sorting = false;
-            //         sorted = false;
-            //         initVector(arr, gen);
-            //         bubs.reset();
-            //     }
-
-            //     // Number 1 pressed, Bubble Sort.
-            //     else if (keyEvent->code == sf::Keyboard::Key::Num1)
-            //     {
-            //         sorting = true;
-
-            //     }
-            // }
         }
         // Restart the clock once per frame.
         sf::Time dt = deltaClock.restart();
@@ -128,10 +114,19 @@ int main()
         // Dropdown Algorithm Selector
         ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
 // TODO: need to implement using the Combo for which algorithm to run instead of number press.
-// Probably will need a start button as well.
+
         // Sort Button calls the sorting.
         if (ImGui::Button("Sort"))
         {
+            // If button is pressed while algorithm is running reset the vector.
+            if ((sorting && !sorted) || sorted)
+            {
+                initVector(arr, gen);
+                sorted = false; // To cover when fully sorted
+            }
+            // Delete object & create a new one for selected algorithm. 
+            delete alg;
+            alg = createAlgorithm(arr, selectedAlg);
             sorting = true;
         }
 
@@ -143,7 +138,8 @@ int main()
             sorting = false;
             sorted = false;
             initVector(arr, gen);
-            bubs.reset();
+            delete alg;
+            alg = createAlgorithm(arr, selectedAlg);
         }
 
         ImGui::End();
@@ -160,7 +156,7 @@ int main()
             while (timer >= stepDelay)
             {
                 // sorting = bubbleSort(arr, i, j);
-                sorting = bubs.step();
+                sorting = alg->step();
                 if (!sorting)
                 {
                     sorted = true;
@@ -176,8 +172,8 @@ int main()
         window.resetGLStates();
 
         // Draw all rectangles & objects on the window.
-        drawVector(arr, window, bubs.getCurrentIndex1(), bubs.getCurrentIndex2(), 
-        bubs.getSortedStart(), sorting, sorted);
+        drawVector(arr, window, alg->getCurrentIndex1(), alg->getCurrentIndex2(), 
+        alg->getSortedStart(), sorting, sorted);
 
         // Render ImGui Content.
         ImGui::SFML::Render(window);

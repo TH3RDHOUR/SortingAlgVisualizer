@@ -36,10 +36,3 @@ bool BubbleSort::step()
 int BubbleSort::getCurrentIndex1() { return j; }
 int BubbleSort::getCurrentIndex2() { return j + 1; }
 int BubbleSort::getSortedStart() { return arr.size() - i; }
-
-// Reset function.
-void BubbleSort::reset()
-{
-    i = 0;
-    j = 0;
-}

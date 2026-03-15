@@ -14,7 +14,9 @@ public:
 
     // Virtual method to be used by children classes.
     virtual bool step() = 0;
-    virtual void reset() = 0;
+    virtual int getCurrentIndex1() = 0;
+    virtual int getCurrentIndex2() = 0;
+    virtual int getSortedStart() = 0;
 
     // Destructor.
     virtual ~SortAlgorithm() = default;
