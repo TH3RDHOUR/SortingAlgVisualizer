@@ -1,9 +1,6 @@
 #include "rendering/draw_vector.h"
 
-// Draw the vector, this is where the color changes take place.
-void drawVector(const std::vector<int>& arr, sf::RenderWindow& window, 
-                int currentIndex1, int currentIndex2, int sortedStart, 
-                bool sorting, bool sorted)
+void drawVector(std::vector<int>& arr, std::vector<BarRole>& roles, sf::RenderWindow& window)
 {
     // Get window height & width for sizing/re-sizing.
     float windowHeight = window.getSize().y;
@@ -12,29 +9,25 @@ void drawVector(const std::vector<int>& arr, sf::RenderWindow& window,
 
     for (int i = 0; i < arr.size(); ++i)
     {
+        // Set up rectangle object.
         sf::RectangleShape rectangle(sf::Vector2f(20, arr[i]));
         rectangle.setSize(sf::Vector2f(rectWidth - 5.f, arr[i]));
 
         // Space out rectangles & set height based on bottom of the screen size.
         rectangle.setPosition(sf::Vector2f(i * rectWidth, windowHeight - arr[i]));
 
-        // If sorting & comparing rects turn red, already sorted turn green, otherwise white.
-        if (!sorting && sorted)
+        // If sorted(green), comparing(red), default(white).
+        if (roles[i] == BarRole::Sorted)
         {
-            // Make sure the final rectangles are changed to green after finished.
-            rectangle.setFillColor(sf::Color::Green); // All done.
+            rectangle.setFillColor(sf::Color::Green);
         }
-        else if (sorting && (i == currentIndex1 || i == currentIndex2))
+        else if (roles[i] == BarRole::Comparing)
         {
-            rectangle.setFillColor(sf::Color::Red); // Currently comparing.
+            rectangle.setFillColor(sf::Color::Red);
         }
-        else if (i >= sortedStart)
+        else if (roles[i] == BarRole::Default)
         {
-            rectangle.setFillColor(sf::Color::Green); // Done sorting.
-        }
-        else
-        {
-            rectangle.setFillColor(sf::Color::White); // Unsorted.
+            rectangle.setFillColor(sf::Color::White);
         }
 
         window.draw(rectangle);

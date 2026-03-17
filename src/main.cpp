@@ -1,14 +1,16 @@
+// SFML & ImGui.
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
-
+// Random
 #include <random>
-#include <vector>
-
+// Algorithms.
 #include "sorting/bubble_sort.h"
+#include "sorting/selection_sort.h"
+#include "sorting/SortAlgorithm.h"
+// Helpers.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
-#include "sorting/SortAlgorithm.h"
 #include "sorting_factory/createAlgorithm.h"
 
 int main()
@@ -53,7 +55,7 @@ int main()
     bool sorted = false;
 
     // Sorting Algorithms.
-    static const char* algs[] = {"Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort", "Quick Sort"};
+    static const char* algs[] = {"Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort", "Quick Sort"};
     static int selectedAlg = 0;
 
     // Size of vector.
@@ -113,7 +115,6 @@ int main()
 
         // Dropdown Algorithm Selector
         ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
-// TODO: need to implement using the Combo for which algorithm to run instead of number press.
 
         // Sort Button calls the sorting.
         if (ImGui::Button("Sort"))
@@ -171,9 +172,11 @@ int main()
         // Reset the OpenGL state
         window.resetGLStates();
 
-        // Draw all rectangles & objects on the window.
-        drawVector(arr, window, alg->getCurrentIndex1(), alg->getCurrentIndex2(), 
-        alg->getSortedStart(), sorting, sorted);
+        // // Draw all rectangles & objects on the window.
+        // drawVector(arr, window, alg->getCurrentIndex1(), alg->getCurrentIndex2(), 
+        // alg->getSortedStart(), sorting, sorted);
+
+        drawVector(arr, alg->getRoles(), window);
 
         // Render ImGui Content.
         ImGui::SFML::Render(window);

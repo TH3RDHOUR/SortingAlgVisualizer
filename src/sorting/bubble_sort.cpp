@@ -5,16 +5,33 @@
 BubbleSort::BubbleSort(std::vector<int>& array)
         : SortAlgorithm(array), i(0), j(0)
 {
+    // Resize & set roles vector to the size of bar vector.
+    state.roles.resize(arr.size());
+    state.resetRoles(array.size());
 }
 
 // Overloaded method
 bool BubbleSort::step()
 {
+    state.resetRoles(arr.size());
+
+    // Mark all sorted bars starting from size - i to size().
+    for (int k = (arr.size() - i); k < arr.size(); k++)
+    {
+        state.markSorted(k);
+    }
+
     // Sorting is finished.
     if (i >= arr.size() - 1)
     {
+        // Mark the final bar as sorted.
+        state.markSorted(0);
         return false;
     }
+
+    // Mark both indicies that are being compared.
+    state.markComparingPair(j, j + 1);
+
     // j has reached the end, restart & increment i.
     if (j == arr.size() - i - 1)
     {
@@ -33,6 +50,5 @@ bool BubbleSort::step()
 }
 
 // Getters.
-int BubbleSort::getCurrentIndex1() { return j; }
-int BubbleSort::getCurrentIndex2() { return j + 1; }
-int BubbleSort::getSortedStart() { return arr.size() - i; }
+// Return roles for each bar for coloring.
+std::vector<BarRole>& BubbleSort::getRoles() { return state.roles; }

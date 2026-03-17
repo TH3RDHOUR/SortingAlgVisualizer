@@ -2,8 +2,6 @@
 #define BUBBLE_SORT_H
 
 #include "sorting/SortAlgorithm.h"
-#include <iostream>
-#include <vector>
 
 class BubbleSort : public SortAlgorithm
 {
@@ -14,11 +12,11 @@ private:
 public:
     BubbleSort(std::vector<int>& arr);
 
+    // Main function to step through the algorithm.
     bool step() override;
 
-    int getCurrentIndex1() override;
-    int getCurrentIndex2() override;
-    int getSortedStart() override;
+    // Return the roles vector for visualizing algorithm.
+    std::vector<BarRole>& getRoles() override;
 };
 
 #endif
