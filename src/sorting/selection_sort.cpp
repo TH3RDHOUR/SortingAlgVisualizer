@@ -13,10 +13,11 @@ SelectionSort::SelectionSort(std::vector<int>& array)
 
 bool SelectionSort::step()
 {
+    // Reset roles vector to all default.
     state.resetRoles(arr.size());
 
-    // Mark all sorted bars starting from size - i to size().
-    for (int k = 0; k < i; k++)
+    // Mark all bars as sorted starting from 0 to i.
+    for (int k = 0; k <= i; k++)
     {
         state.markSorted(k);
     }
@@ -38,7 +39,7 @@ bool SelectionSort::step()
         i++;
         j = i + 1;
         min_idx = i;
-        return i < arr.size() - 1;
+        return i <= arr.size() - 1;
     }
     // Found new minimum index value.
     else if (arr[j] < arr[min_idx])
@@ -46,7 +47,7 @@ bool SelectionSort::step()
         min_idx = j;
     }
     j++;
-    return i < arr.size() - 1;
+    return i <= arr.size() - 1;
 }
 
 // Getters.
