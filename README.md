@@ -1,22 +1,37 @@
 I am using CMake to import & use different libraries for this project.
 
 When you switch computers it is probably a good idea to clean the build file by deleting it:
-**rm -rf build**
 
-Each time you make a change please use the following commands to run the program:
+```
+rm -rf build
+```
 
-### To Configure the project:
+Each time you make a change please use the following commands from the source directory to run the program:
 
-**cmake -S . -B build**
+# Sorting Algorithm Visualizer
 
-### To Build the project:
+## To Configure the project:
 
-**cmake --build build**
+```
+cmake -S . -B build
+```
 
-### To Run in Windows:
+_-S (source directory) and -B (binary directory) make for a cleaner workflow_
 
-**.\build\Debug\SortingAlgVisualizer.exe**
+## To Build the project:
 
-### To run in MacOS or Linux:
+```
+cmake --build build
+```
 
-**./build/SortingAlgVisualizer**
+## To Run in Windows:
+
+```
+.\build\Debug\SortingAlgVisualizer.exe
+```
+
+## To run in MacOS or Linux:
+
+```
+./build/SortingAlgVisualizer
+```
