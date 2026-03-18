@@ -1,5 +1,5 @@
 #include "sorting/selection_sort.h"
-#include "sorting/SortAlgorithm.h"
+#include "sorting/sort_algorithm.h"
 
 SelectionSort::SelectionSort(std::vector<int>& array)
             : SortAlgorithm(array), i(0), j(i + 1)

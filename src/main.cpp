@@ -7,11 +7,11 @@
 // Algorithms.
 #include "sorting/bubble_sort.h"
 #include "sorting/selection_sort.h"
-#include "sorting/SortAlgorithm.h"
+#include "sorting/sort_algorithm.h"
 // Helpers.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
-#include "sorting_factory/createAlgorithm.h"
+#include "sorting_factory/create_algorithm.h"
 
 int main()
 {

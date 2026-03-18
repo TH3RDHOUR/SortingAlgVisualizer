@@ -1,4 +1,4 @@
-#include "sorting_factory/createAlgorithm.h"
+#include "sorting_factory/create_algorithm.h"
 #include "sorting/bubble_sort.h"
 #include "sorting/selection_sort.h"
 

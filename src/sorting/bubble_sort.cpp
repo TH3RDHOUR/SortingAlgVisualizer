@@ -1,5 +1,5 @@
 #include "sorting/bubble_sort.h"
-#include "sorting/SortAlgorithm.h"
+#include "sorting/sort_algorithm.h"
 
 // Constructor.
 BubbleSort::BubbleSort(std::vector<int>& array)

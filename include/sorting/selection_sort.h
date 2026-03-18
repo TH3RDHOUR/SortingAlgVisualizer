@@ -1,7 +1,7 @@
 #ifndef SELECTION_SORT_H
 #define SELECTION_SORT_H
 
-#include "sorting/SortAlgorithm.h"
+#include "sorting/sort_algorithm.h"
 #include <iostream>
 #include <vector>
 

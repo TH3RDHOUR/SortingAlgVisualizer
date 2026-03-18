@@ -2,7 +2,7 @@
 #define CREATE_ALGORITHM_H
 
 #include <vector>
-#include "sorting/SortAlgorithm.h"
+#include "sorting/sort_algorithm.h"
 
 SortAlgorithm* createAlgorithm(std::vector<int>& arr, int selectedAlg);
 
