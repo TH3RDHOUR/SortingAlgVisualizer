@@ -10,7 +10,7 @@ private:
     int j;
 
 public:
-    BubbleSort(std::vector<int>& arr);
+    BubbleSort(std::vector<int>& m_arr);
 
     // Main function to step through the algorithm.
     bool step() override;

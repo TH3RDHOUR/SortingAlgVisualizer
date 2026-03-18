@@ -18,11 +18,16 @@ struct VisualState
     // Reset all roles to default.
     void resetRoles(int size)
     {
+        if (roles.size() != size)
+        {
+            roles.resize(size, BarRole::Default);
+        }
+
         for (int i = 0; i < size; i++)
         {
             if (roles[i] != BarRole::Sorted)
             {
-                roles[i] = BarRole::Default;
+                markDefault(i);
             }
         }
     }
@@ -35,7 +40,7 @@ struct VisualState
 
     void markComparing(int num)
     {
-        roles[num] = BarRole::Comparing;
+        if (num < roles.size()) roles[num] = BarRole::Comparing;
     }
 
     // Mark two bars as comparing if it is not the last element.
@@ -47,13 +52,13 @@ struct VisualState
     // Mark the bar as sorted
     void markSorted(int num)
     {
-        roles[num] = BarRole::Sorted;
+        if (num < roles.size()) roles[num] = BarRole::Sorted;
     }
 
     // Mark the bar as default.
     void markDefault(int num)
     {
-        roles[num] = BarRole::Default;
+        if (num < roles.size()) roles[num] = BarRole::Default;
     }
 };
 

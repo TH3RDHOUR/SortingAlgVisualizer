@@ -6,12 +6,12 @@
 class SortAlgorithm
 {
 protected:
-    std::vector<int>& arr;
+    std::vector<int>& m_arr;
     VisualState state;
 
 public:
     // Constructor.
-    SortAlgorithm(std::vector<int>& array) : arr(array) {}
+    SortAlgorithm(std::vector<int>& array) : m_arr(array) {}
 
     // Virtual method to be used by children classes.
     virtual bool step() = 0;

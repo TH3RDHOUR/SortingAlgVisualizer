@@ -1,17 +1,17 @@
-#ifndef SELECTION_SORT_H
-#define SELECTION_SORT_H
+#ifndef INSERTION_SORT_H
+#define INSERTION_SORT_H
 
 #include "sorting/sort_algorithm.h"
 
-class SelectionSort : public SortAlgorithm
+class InsertionSort : public SortAlgorithm
 {
 private:
     int i;
     int j;
-    int min_idx;
+    int key;
 
 public:
-    SelectionSort(std::vector<int>& m_arr);
+    InsertionSort(std::vector<int>& m_arr);
 
     bool step() override;
 

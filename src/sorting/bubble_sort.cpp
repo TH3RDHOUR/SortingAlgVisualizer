@@ -2,51 +2,59 @@
 #include "sorting/sort_algorithm.h"
 
 // Constructor.
-BubbleSort::BubbleSort(std::vector<int>& array)
-        : SortAlgorithm(array), i(0), j(0)
+BubbleSort::BubbleSort(std::vector<int>& arr)
+        : SortAlgorithm(arr), i(0), j(0)
 {
     // Resize & set roles vector to the size of bar vector.
-    state.roles.resize(arr.size());
-    state.resetRoles(array.size());
+    state.roles.resize(m_arr.size());
+    state.resetRoles(m_arr.size());
 }
 
 // Overloaded method
 bool BubbleSort::step()
 {
-    state.resetRoles(arr.size());
+    int n = m_arr.size();
 
-    // Mark all sorted bars starting from size - i to size().
-    for (int k = (arr.size() - i); k < arr.size(); k++)
+    state.resetRoles(n);
+
+    // Mark all sorted bars (last i elements).
+    for (int k = (n - i); k < n; k++)
     {
         state.markSorted(k);
     }
 
     // Sorting is finished.
-    if (i >= arr.size() - 1)
+    if (i >= n - 1)
     {
-        // Mark the final bar as sorted.
-        state.markSorted(0);
+        // Ensure the final bars are marked as sorted.
+        for (int k = 0; k < n; k++)
+        {
+            state.markSorted(k);
+        }
         return false;
     }
 
-    // Mark both indicies that are being compared.
-    state.markComparingPair(j, j + 1);
+    // INNER LOOP: Comparing & swapping j.
+    if (j < n - i - 1)
+    {
+        // Mark both indicies that are being compared.
+        state.markComparingPair(j, j + 1);
 
-    // j has reached the end, restart & increment i.
-    if (j == arr.size() - i - 1)
+        // if we need to swap the elements.
+        if (m_arr[j] > m_arr[j + 1])
+        {
+            std::swap(m_arr[j], m_arr[j + 1]);
+        }   
+
+        j++;
+    }
+    else
     {
+        // Reset j & increment i.
         j = 0;
-        i++;
-        return i < arr.size() - 1;
+        i++;    
     }
-    // if we need to swap the elements.
-    else if (arr[j] > arr[j + 1])
-    {
-        std::swap(arr[j], arr[j + 1]);
-    }
-    // Increment j & return bool of if i has reached the end of vector.
-    j++;
-    return i < arr.size() - 1;
+    return true;
 }
 
 // Getters.
