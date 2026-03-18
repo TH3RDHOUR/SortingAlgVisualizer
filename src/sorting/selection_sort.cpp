@@ -17,7 +17,7 @@ bool SelectionSort::step()
     state.resetRoles(arr.size());
 
     // Mark all bars as sorted starting from 0 to i.
-    for (int k = 0; k <= i; k++)
+    for (int k = 0; k < i; k++)
     {
         state.markSorted(k);
     }

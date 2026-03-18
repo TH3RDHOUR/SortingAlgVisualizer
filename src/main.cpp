@@ -172,10 +172,6 @@ int main()
         // Reset the OpenGL state
         window.resetGLStates();
 
-        // // Draw all rectangles & objects on the window.
-        // drawVector(arr, window, alg->getCurrentIndex1(), alg->getCurrentIndex2(), 
-        // alg->getSortedStart(), sorting, sorted);
-
         drawVector(arr, alg->getRoles(), window);
 
         // Render ImGui Content.
