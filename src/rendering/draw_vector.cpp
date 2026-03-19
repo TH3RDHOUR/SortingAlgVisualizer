@@ -29,6 +29,10 @@ void drawVector(std::vector<int>& arr, std::vector<BarRole>& roles, sf::RenderWi
         {
             rectangle.setFillColor(sf::Color::White);
         }
+        else if (roles[i] == BarRole::Key)
+        {
+            rectangle.setFillColor(sf::Color::Blue);
+        }
 
         window.draw(rectangle);
     }

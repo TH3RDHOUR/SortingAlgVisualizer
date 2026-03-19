@@ -8,7 +8,8 @@ enum class BarRole
     Default,
     Comparing,
     Sorted,
-    Pivot
+    Pivot,
+    Key
 };
 
 struct VisualState
@@ -59,6 +60,12 @@ struct VisualState
     void markDefault(int num)
     {
         if (num < roles.size()) roles[num] = BarRole::Default;
+    }
+
+    // Mark the bar as the key index.
+    void markKey(int num)
+    {
+        if (num < roles.size()) roles[num] = BarRole::Key;
     }
 };
 

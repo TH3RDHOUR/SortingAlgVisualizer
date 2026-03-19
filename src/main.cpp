@@ -4,10 +4,6 @@
 #include <imgui-SFML.h>
 // Random
 #include <random>
-// Algorithms.
-#include "sorting/bubble_sort.h"
-#include "sorting/selection_sort.h"
-#include "sorting/sort_algorithm.h"
 // Helpers.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
