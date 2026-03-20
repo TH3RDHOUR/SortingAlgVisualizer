@@ -28,7 +28,7 @@ bool InsertionSort::step()
     }
 
     // Mark all sorted bars (last i elements).
-    for (int k = 0; k < i; k++)
+    for (int k = 0; k <= i; k++)
     {
         state.markSorted(k);
     }
@@ -40,7 +40,7 @@ bool InsertionSort::step()
 
         m_arr[j + 1] = m_arr[j];
 
-        if (j + 1 < i)
+        if (j + 1 == i)
         {
             state.markSorted(i);
         }
@@ -64,6 +64,4 @@ bool InsertionSort::step()
 }
 
 // Getters.
-// Return roles for each bar for coloring.
-std::vector<BarRole>& InsertionSort::getRoles() { return state.roles; }
 VisualState& InsertionSort::getState() { return state; }

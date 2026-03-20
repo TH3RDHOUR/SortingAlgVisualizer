@@ -38,7 +38,7 @@ struct VisualState
         }
     }
 
-    // Returns a const reference to avoid changing it.
+    // Returns a const reference of roles vector.
     const std::vector<BarRole>& getRoles() const
     {
         return roles;

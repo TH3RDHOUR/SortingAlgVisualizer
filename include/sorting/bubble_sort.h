@@ -15,9 +15,7 @@ public:
     // Main function to step through the algorithm.
     bool step() override;
 
-    // Return the roles vector for visualizing algorithm.
-    std::vector<BarRole>& getRoles() override;
-    VisualState& getState() override;
+    VisualState& BubbleSort::getState() override;
 };
 
 #endif

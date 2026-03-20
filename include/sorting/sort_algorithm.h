@@ -15,8 +15,7 @@ public:
 
     // Virtual method to be used by children classes.
     virtual bool step() = 0;
-    // Get the roles vector for visualization.
-    virtual std::vector<BarRole>& getRoles() = 0;
+
     // Get the Visual State of the algorithm.
     virtual VisualState& getState() = 0;
 

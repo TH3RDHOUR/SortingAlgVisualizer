@@ -58,6 +58,4 @@ bool BubbleSort::step()
 }
 
 // Getters.
-// Return roles for each bar for coloring.
-std::vector<BarRole>& BubbleSort::getRoles() { return state.roles; }
 VisualState& BubbleSort::getState() { return state; }
