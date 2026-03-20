@@ -17,6 +17,7 @@ public:
 
     // Return the roles vector for visualizing algorithm.
     std::vector<BarRole>& getRoles() override;
+    VisualState& getState() override;
 };
 
 #endif

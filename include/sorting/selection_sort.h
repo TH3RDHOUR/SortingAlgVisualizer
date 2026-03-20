@@ -16,6 +16,7 @@ public:
     bool step() override;
 
     std::vector<BarRole>& getRoles() override;
+    VisualState& getState() override;
 };
 
 #endif

@@ -168,7 +168,7 @@ int main()
         // Reset the OpenGL state
         window.resetGLStates();
 
-        drawVector(arr, alg->getRoles(), window);
+        drawVector(arr, alg->getState(), window);
 
         // Render ImGui Content.
         ImGui::SFML::Render(window);

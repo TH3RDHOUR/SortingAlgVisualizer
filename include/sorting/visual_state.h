@@ -16,6 +16,11 @@ struct VisualState
 {
     std::vector<BarRole> roles;
 
+    // Variables for tracking key index & value.
+    int keyIndex = 0;
+    int keyValue = 0;
+    bool hasKey = false;
+
     // Reset all roles to default.
     void resetRoles(int size)
     {
@@ -63,8 +68,11 @@ struct VisualState
     }
 
     // Mark the bar as the key index.
-    void markKey(int num)
+    void markKey(int num, int size)
     {
+        keyIndex = num;
+        keyValue = size;
+        hasKey = true;
         if (num < roles.size()) roles[num] = BarRole::Key;
     }
 };

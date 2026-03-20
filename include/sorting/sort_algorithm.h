@@ -17,6 +17,8 @@ public:
     virtual bool step() = 0;
     // Get the roles vector for visualization.
     virtual std::vector<BarRole>& getRoles() = 0;
+    // Get the Visual State of the algorithm.
+    virtual VisualState& getState() = 0;
 
     // Destructor.
     virtual ~SortAlgorithm() = default;

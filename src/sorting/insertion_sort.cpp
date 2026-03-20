@@ -17,17 +17,6 @@ bool InsertionSort::step()
 
     state.resetRoles(n);
 
-    if (j == (i - 1))
-    {
-        state.markKey(i);
-    }
-
-    // Mark all sorted bars (last i elements).
-    for (int k = 0; k < i; k++)
-    {
-        state.markSorted(k);
-    }
-
     if (i >= n)
     {
         // Ensure the final bars are marked as sorted.
@@ -38,21 +27,37 @@ bool InsertionSort::step()
         return false;
     }
 
+    // Mark all sorted bars (last i elements).
+    for (int k = 0; k < i; k++)
+    {
+        state.markSorted(k);
+    }
+
     if (j >= 0 && m_arr[j] > key)
     {
         // Mark both indicies that are being compared.
-        state.markComparingPair(j, j + 1);
+        state.markComparing(j);
 
         m_arr[j + 1] = m_arr[j];
+
+        if (j + 1 < i)
+        {
+            state.markSorted(i);
+        }
+
+        state.markKey(j + 1, key);
         j--;
     }
     else
     {
         m_arr[j + 1] = key;
-        state.markKey(j + 1);
+        state.markKey(j + 1, key);
         i++;
-        key = m_arr[i];
-        j = i - 1;
+        if (i < n)
+        {
+            key = m_arr[i];
+            j = i - 1;
+        }
     }
 
     return true;
@@ -61,3 +66,4 @@ bool InsertionSort::step()
 // Getters.
 // Return roles for each bar for coloring.
 std::vector<BarRole>& InsertionSort::getRoles() { return state.roles; }
+VisualState& InsertionSort::getState() { return state; }

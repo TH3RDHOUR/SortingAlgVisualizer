@@ -60,3 +60,4 @@ bool SelectionSort::step()
 
 // Getters.
 std::vector<BarRole>& SelectionSort::getRoles() { return state.roles; }
+VisualState& SelectionSort::getState() { return state; }
