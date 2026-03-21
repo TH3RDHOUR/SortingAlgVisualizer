@@ -4,7 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include "rendering/visual_state.h"
 
-void initVector(std::vector<int>& arr, std::mt19937& gen);
+void initVector(std::vector<int>& arr, std::mt19937& gen, VisualState& state);
 
 #endif

@@ -13,9 +13,7 @@ private:
 public:
     InsertionSort(std::vector<int>& m_arr);
 
-    bool step() override;
-
-    VisualState& InsertionSort::getState() override;
+    bool step(SortOp& op) override;
 };
 
 #endif

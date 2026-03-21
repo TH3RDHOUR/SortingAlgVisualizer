@@ -31,9 +31,26 @@ struct VisualState
 
         for (int i = 0; i < size; i++)
         {
+            roles[i] = BarRole::Default;
+        }
+
+        hasKey = false;
+        keyIndex = 0;
+        keyValue = 0;
+    }
+
+    void resetNonSorted(int size)
+    {
+        if (roles.size() != size)
+        {
+            roles.resize(size, BarRole::Default);
+        }
+
+        for (int i = 0; i < size; i++)
+        {
             if (roles[i] != BarRole::Sorted)
             {
-                markDefault(i);
+                roles[i] = BarRole::Default;
             }
         }
     }

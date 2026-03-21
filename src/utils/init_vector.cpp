@@ -1,7 +1,7 @@
 #include "utils/init_vector.h"
 
 // Initialize vector with random numbers.
-void initVector(std::vector<int>& arr, std::mt19937& gen)
+void initVector(std::vector<int>& arr, std::mt19937& gen, VisualState& state)
 {
     // Define the number distribution.
     std::uniform_int_distribution<> distrib(1, 500);
@@ -10,5 +10,6 @@ void initVector(std::vector<int>& arr, std::mt19937& gen)
     for (int& num : arr)
     {
         num = distrib(gen);
+        state.markDefault(num);
     }
 }

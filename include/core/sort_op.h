@@ -5,7 +5,7 @@ enum class OpType {
     Compare,
     Swap,
     Overwrite,
-    MarkSorted,
+    Sorted,
     MarkPivot,
     MarkKey
 };

@@ -3,59 +3,44 @@
 
 // Constructor.
 BubbleSort::BubbleSort(std::vector<int>& arr)
-        : SortAlgorithm(arr), i(0), j(0)
-{
-    // Resize & set roles vector to the size of bar vector.
-    state.roles.resize(m_arr.size());
-    state.resetRoles(m_arr.size());
-}
+        : SortAlgorithm(arr), i(0), j(0), swapPending(false) {}
 
 // Overloaded method
-bool BubbleSort::step()
+bool BubbleSort::step(SortOp& op)
 {
     int n = m_arr.size();
 
-    state.resetRoles(n);
-
-    // Mark all sorted bars (last i elements).
-    for (int k = (n - i); k < n; k++)
-    {
-        state.markSorted(k);
-    }
-
-    // Sorting is finished.
+    // Sorting finished
     if (i >= n - 1)
-    {
-        // Ensure the final bars are marked as sorted.
-        for (int k = 0; k < n; k++)
-        {
-            state.markSorted(k);
-        }
         return false;
+
+    // Inner loop finished, move to next pass
+    if (j >= n - i - 1)
+    {
+        // Mark last element as sorted, reset j & increment i.
+        op.type = OpType::Sorted;
+        op.a = n - 1 - i;
+        j = 0;
+        i++;
+        return true;
     }
 
-    // INNER LOOP: Comparing & swapping j.
-    if (j < n - i - 1)
+    // Set operations to be compared.
+    op.a = j;
+    op.b = j + 1;
+
+    // If elements are swapping or just comparing.
+    if (m_arr[j] > m_arr[j + 1])
     {
-        // Mark both indicies that are being compared.
-        state.markComparingPair(j, j + 1);
-
-        // if we need to swap the elements.
-        if (m_arr[j] > m_arr[j + 1])
-        {
-            std::swap(m_arr[j], m_arr[j + 1]);
-        }   
-
-        j++;
+        op.type = OpType::Swap;
     }
     else
     {
-        // Reset j & increment i.
-        j = 0;
-        i++;    
+        op.type = OpType::Compare;
     }
+
+    // Move to next pair.
+    j++;
+
     return true;
 }
-
-// Getters.
-VisualState& BubbleSort::getState() { return state; }

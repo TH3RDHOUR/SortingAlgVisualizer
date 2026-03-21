@@ -9,10 +9,10 @@ SortAlgorithm* createAlgorithm(std::vector<int>& arr, int selectedAlg)
     {
         case 0:
             return new BubbleSort(arr);
-        case 1:
-            return new SelectionSort(arr);
-        case 2:
-            return new InsertionSort(arr);
+        // case 1:
+        //     return new SelectionSort(arr);
+        // case 2:
+        //     return new InsertionSort(arr);
     }
     return nullptr;
 }

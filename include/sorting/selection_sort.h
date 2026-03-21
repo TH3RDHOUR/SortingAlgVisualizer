@@ -13,9 +13,7 @@ private:
 public:
     SelectionSort(std::vector<int>& m_arr);
 
-    bool step() override;
-
-    VisualState& SelectionSort::getState() override;
+    bool step(SortOp& op) override;
 };
 
 #endif

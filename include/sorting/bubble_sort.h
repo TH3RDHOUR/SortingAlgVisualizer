@@ -8,14 +8,15 @@ class BubbleSort : public SortAlgorithm
 private:
     int i;
     int j;
+    bool swapPending;
 
 public:
     BubbleSort(std::vector<int>& m_arr);
 
     // Main function to step through the algorithm.
-    bool step() override;
+    bool step(SortOp& op) override;
 
-    VisualState& BubbleSort::getState() override;
+    //VisualState& BubbleSort::getState() override;
 };
 
 #endif

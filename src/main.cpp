@@ -28,7 +28,7 @@ int main()
     window.setPosition(sf::Vector2i(
         (windowSize.x - windowWidth) / 2,
         (windowSize.y - windowHeight) / 2
-  ));
+    ));
 
     // Initialize IMGUI-SFML.
     if (!ImGui::SFML::Init(window))
@@ -60,12 +60,15 @@ int main()
     // Vector of integers.
     std::vector<int> arr(size);
 
+    VisualState state;
+    state.roles.resize(arr.size());
+
     // Obtain a seed form a hardware source.
     std::random_device rd;
     // Initializae the random number generator.
     std::mt19937 gen(rd());
 
-    initVector(arr, gen);
+    initVector(arr, gen, state);
 
     // Initial state of object based on first algorithm choice.
     SortAlgorithm* alg = createAlgorithm(arr, 0);
@@ -118,7 +121,8 @@ int main()
             // If button is pressed while algorithm is running reset the vector.
             if ((sorting && !sorted) || sorted)
             {
-                initVector(arr, gen);
+                state.resetRoles(arr.size());
+                initVector(arr, gen, state);
                 sorted = false; // To cover when fully sorted
             }
             // Delete object & create a new one for selected algorithm. 
@@ -134,7 +138,8 @@ int main()
         {
             sorting = false;
             sorted = false;
-            initVector(arr, gen);
+            state.resetRoles(arr.size());
+            initVector(arr, gen, state);
             delete alg;
             alg = createAlgorithm(arr, selectedAlg);
         }
@@ -150,14 +155,49 @@ int main()
         {
             timer += deltaTime;
 
+            // Sorting Loop.
             while (timer >= stepDelay)
             {
-                // sorting = bubbleSort(arr, i, j);
-                sorting = alg->step();
+                SortOp op;
+
+                 // Reset only non-sorted bars
+                state.resetNonSorted(arr.size());
+
+                sorting = alg->step(op);
+
+                // 1. Apply operation.
+                if (op.type == OpType::Swap)
+                {
+                    std::swap(arr[op.a], arr[op.b]);
+                }
+
+                // 2. Update visuals.
+                if (op.type == OpType::Compare)
+                {
+                    state.markComparingPair(op.a, op.b);
+                }
+                else if (op.type == OpType::Swap)
+                {
+                    state.markComparingPair(op.a, op.b);
+                }
+                else if (op.type == OpType::Sorted)
+                {
+                    state.markSorted(op.a);
+                }
+
+                // Check if still sorting.
                 if (!sorting)
                 {
                     sorted = true;
+
+                    // Make sure all bars are marked sorted when done.
+                    for (int k = 0; k < arr.size(); ++k)
+                    {
+                        state.markSorted(k);
+                    }
                 }
+
+                // Decrement timer.
                 timer -= stepDelay;
             }
         }
@@ -168,7 +208,7 @@ int main()
         // Reset the OpenGL state
         window.resetGLStates();
 
-        drawVector(arr, alg->getState(), window);
+        drawVector(arr, state, window);
 
         // Render ImGui Content.
         ImGui::SFML::Render(window);

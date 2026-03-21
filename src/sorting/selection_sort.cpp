@@ -5,22 +5,22 @@ SelectionSort::SelectionSort(std::vector<int>& arr)
             : SortAlgorithm(arr), i(0), j((arr.size() > 1) ? 1 : 0) // Edge case if arr.size is 0 or 1.
 {
     // Resize & set roles vector to the size of bar vector.
-    state.roles.resize(m_arr.size());
-    state.resetRoles(m_arr.size());
+    // state.roles.resize(m_arr.size());
+    // state.resetRoles(m_arr.size());
     
     min_idx = j;
 }
 
-bool SelectionSort::step()
+bool SelectionSort::step(SortOp& op)
 {
     int n = m_arr.size();
     // Reset roles vector to all default.
-    state.resetRoles(n);
+    //state.resetRoles(n);
 
     // Mark all bars as sorted starting from 0 to i.
     for (int k = 0; k < i; k++)
     {
-        state.markSorted(k);
+        //state.markSorted(k);
     }
 
     // Sorting is finished.
@@ -28,7 +28,7 @@ bool SelectionSort::step()
     {
         for (int k = 0; k < n; k++)
         {
-            state.markSorted(i);
+            //state.markSorted(i);
         }
         return false;
     }
@@ -38,7 +38,7 @@ bool SelectionSort::step()
     if (j < n)
     {
         // Mark both indicies that are being compared.
-        state.markComparingPair(min_idx, j);
+        //state.markComparingPair(min_idx, j);
 
         if (m_arr[j] < m_arr[min_idx])
         {
@@ -57,6 +57,3 @@ bool SelectionSort::step()
     }
     return true;
 }
-
-// Getters.
-VisualState& SelectionSort::getState() { return state; }
