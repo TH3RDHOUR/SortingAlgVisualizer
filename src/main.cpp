@@ -2,8 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
-// Random
+// Random & queue
 #include <random>
+#include <queue>
 // Helpers.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
@@ -45,10 +46,12 @@ int main()
     float stepDelay = 0.05f;
     float speed = 20.0f;
     float timer = 0.0f;
+    float algoTimer = 0.0f;
 
     // Sorting variables.
     bool sorting = false;
     bool sorted = false;
+    bool sortedEver = false;
 
     // Sorting Algorithms.
     static const char* algs[] = {"Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort", "Quick Sort"};
@@ -59,9 +62,13 @@ int main()
 
     // Vector of integers.
     std::vector<int> arr(size);
+    std::vector<int> logicalArr(size);
 
     VisualState state;
     state.roles.resize(arr.size());
+
+    // Event queue for animations.
+    std::queue<SortOp> opQueue;
 
     // Obtain a seed form a hardware source.
     std::random_device rd;
@@ -69,9 +76,10 @@ int main()
     std::mt19937 gen(rd());
 
     initVector(arr, gen, state);
+    logicalArr = arr;
 
     // Initial state of object based on first algorithm choice.
-    SortAlgorithm* alg = createAlgorithm(arr, 0);
+    SortAlgorithm* alg = createAlgorithm(logicalArr, 0);
 
     sf::Clock deltaClock;
 
@@ -123,12 +131,15 @@ int main()
             {
                 state.resetRoles(arr.size());
                 initVector(arr, gen, state);
+                logicalArr = arr;
                 sorted = false; // To cover when fully sorted
             }
             // Delete object & create a new one for selected algorithm. 
             delete alg;
-            alg = createAlgorithm(arr, selectedAlg);
+            alg = createAlgorithm(logicalArr, selectedAlg);
             sorting = true;
+            sortedEver = true;
+            while (!opQueue.empty()) opQueue.pop(); // Clear the queue.
         }
 
         ImGui::SameLine();
@@ -138,10 +149,13 @@ int main()
         {
             sorting = false;
             sorted = false;
+            sortedEver = false;
             state.resetRoles(arr.size());
             initVector(arr, gen, state);
+            logicalArr = arr;
             delete alg;
-            alg = createAlgorithm(arr, selectedAlg);
+            alg = createAlgorithm(logicalArr, selectedAlg);
+            while (!opQueue.empty()) opQueue.pop(); // Clear the queue.
         }
 
         ImGui::End();
@@ -149,56 +163,78 @@ int main()
         // Keep track of time elapsed for speed of sorting.
         float deltaTime = dt.asSeconds();
         stepDelay = 1.0f / speed;
+        state.swapSpeed = speed / 10.0f;
 
-        // Keep sorting while there is still numbers to sort.
-        if (sorting)
+        if (sorting && state.activeSwaps.empty())
         {
             timer += deltaTime;
-
-            // Sorting Loop.
             while (timer >= stepDelay)
             {
                 SortOp op;
+                bool stillSorting = alg->step(op);
 
-                 // Reset only non-sorted bars
-                state.resetNonSorted(arr.size());
-
-                sorting = alg->step(op);
-
-                // 1. Apply operation.
-                if (op.type == OpType::Swap)
+                if (!stillSorting)
                 {
-                    std::swap(arr[op.a], arr[op.b]);
+                    sorting = false;
+                    break;
                 }
 
-                // 2. Update visuals.
-                if (op.type == OpType::Compare)
-                {
-                    state.markComparingPair(op.a, op.b);
-                }
-                else if (op.type == OpType::Swap)
-                {
-                    state.markComparingPair(op.a, op.b);
-                }
-                else if (op.type == OpType::Sorted)
-                {
-                    state.markSorted(op.a);
-                }
-
-                // Check if still sorting.
-                if (!sorting)
-                {
-                    sorted = true;
-
-                    // Make sure all bars are marked sorted when done.
-                    for (int k = 0; k < arr.size(); ++k)
-                    {
-                        state.markSorted(k);
-                    }
-                }
-
-                // Decrement timer.
+                opQueue.push(op);
                 timer -= stepDelay;
+            }
+        }
+
+        // Main sorting logic.
+        // 1. Only process if there's no active animation & enough time has passed.
+        if (state.activeSwaps.empty() && !opQueue.empty())
+        {
+            SortOp op = opQueue.front();
+            opQueue.pop();
+
+            state.resetNonSorted(arr.size());
+
+            switch (op.type)
+            {
+                case OpType::Compare:
+                    state.markComparingPair(op.a, op.b);
+                    break;
+                case OpType::Swap:
+                    state.activeSwaps.push_back({op.a, op.b, 0.0f});
+                    state.markComparingPair(op.a, op.b);
+                    break;
+                case OpType::Sorted:
+                    state.markSorted(op.a);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // BLOCK LOGIC while animating
+        // 2. Update ongoing swap animations.
+        for (auto it = state.activeSwaps.begin(); it != state.activeSwaps.end(); )
+        {
+            it->progress += deltaTime * state.swapSpeed;
+
+            if (it->progress >= 1.0f)
+            {
+                std::swap(arr[it->indexA], arr[it->indexB]);
+                it = state.activeSwaps.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        // 3. Final completion check.
+        if (!sorted && !sorting && sortedEver && opQueue.empty() && state.activeSwaps.empty())
+        {
+            sorted = true;
+            // Make sure all bars marked sorted when finished.
+            for (int k = 0; k < arr.size(); ++k)
+            {
+                state.markSorted(k);
             }
         }
 

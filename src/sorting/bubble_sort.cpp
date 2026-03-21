@@ -33,6 +33,7 @@ bool BubbleSort::step(SortOp& op)
     if (m_arr[j] > m_arr[j + 1])
     {
         op.type = OpType::Swap;
+        std::swap(m_arr[j], m_arr[j + 1]);
     }
     else
     {

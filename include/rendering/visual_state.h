@@ -12,6 +12,14 @@ enum class BarRole
     Key
 };
 
+// Help animate the swapping.
+struct SwapAnimation
+{
+    int indexA;
+    int indexB;
+    float progress; // 0.0 -> 1.0
+};
+
 struct VisualState
 {
     std::vector<BarRole> roles;
@@ -20,6 +28,10 @@ struct VisualState
     int keyIndex = 0;
     int keyValue = 0;
     bool hasKey = false;
+
+    // Keep track of all currently active swaps in algorithm.
+    std::vector<SwapAnimation> activeSwaps;
+    float swapSpeed = 5.0f;
 
     // Reset all roles to default.
     void resetRoles(int size)

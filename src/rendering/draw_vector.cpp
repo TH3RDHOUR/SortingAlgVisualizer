@@ -17,29 +17,35 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
             height = state.keyValue;
         }
 
-        // Set up rectangle object.
-        sf::RectangleShape rectangle(sf::Vector2f(20, height));
-        rectangle.setSize(sf::Vector2f(rectWidth - 5.f, height));
+        // Compute interpolated X position if the bar is swapping.
+        float xPos = i * rectWidth; // Default position.
 
-        // Space out rectangles & set height based on bottom of the screen size.
-        rectangle.setPosition(sf::Vector2f(i * rectWidth, windowHeight - height));
+        // For each swap in activeSwaps update swapping animation.
+        for (const auto& swap : state.activeSwaps)
+        {
+            if (i == swap.indexA)
+            {
+                xPos = (1.0f - swap.progress) * swap.indexA * rectWidth
+                     + swap.progress * swap.indexB * rectWidth;
+            }
+            else if (i == swap.indexB)
+            {
+                xPos = (1.0f - swap.progress) * swap.indexB * rectWidth
+                     + swap.progress * swap.indexA * rectWidth;
+            }
+        }
 
-        // If sorted(green), comparing(red), default(white), key(blue).
-        if (state.roles[i] == BarRole::Sorted)
+        // Set up rectangle object and position.
+        sf::RectangleShape rectangle(sf::Vector2f(rectWidth - 5.f, height));
+        rectangle.setPosition(sf::Vector2f(xPos, windowHeight - height));
+
+        // Set up color based on role.
+        switch (state.roles[i])
         {
-            rectangle.setFillColor(sf::Color::Green);
-        }
-        else if (state.roles[i] == BarRole::Comparing)
-        {
-            rectangle.setFillColor(sf::Color::Red);
-        }
-        else if (state.roles[i] == BarRole::Default)
-        {
-            rectangle.setFillColor(sf::Color::White);
-        }
-        else if (state.roles[i] == BarRole::Key)
-        {
-            rectangle.setFillColor(sf::Color::Blue);
+            case BarRole::Sorted:    rectangle.setFillColor(sf::Color::Green); break;
+            case BarRole::Comparing: rectangle.setFillColor(sf::Color::Red);   break;
+            case BarRole::Key:       rectangle.setFillColor(sf::Color::Blue);  break;
+            default:                 rectangle.setFillColor(sf::Color::White); break;
         }
 
         window.draw(rectangle);
