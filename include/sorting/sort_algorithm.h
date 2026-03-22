@@ -1,5 +1,6 @@
 /*
 This class is the main base class for all algorithms
+onEvent allows events to be captured all at once then visualized one at a time.
 */
 #ifndef SORT_ALGORITHM_H
 #define SORT_ALGORITHM_H

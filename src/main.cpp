@@ -2,9 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
-// Random & queue
+// Standard libraries.
 #include <random>
 #include <queue>
+#include <iostream>
 // Helpers.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
@@ -139,9 +140,10 @@ int main()
             alg = createAlgorithm(selectedAlg);
 
             // Set Callback before running algorithm.
-            alg->onEvent = [&](const SortEvent& e)
+            alg->onEvent = [&](const SortEvent& event)
             {
-                eventQueue.push({e.type, e.a, e.b, e.value}); // Enqueue event for animation
+                // Enqueue event for animation
+                eventQueue.push({event.type, event.a, event.b, event.value});
             };
 
             // Run algorithm.

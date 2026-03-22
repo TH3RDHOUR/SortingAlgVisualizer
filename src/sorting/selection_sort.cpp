@@ -1,5 +1,4 @@
 #include "sorting/selection_sort.h"
-#include "sorting/sort_algorithm.h"
 
 // SelectionSort::SelectionSort(std::vector<int>& arr)
 //             : SortAlgorithm(arr), i(0), j((arr.size() > 1) ? 1 : 0) // Edge case if arr.size is 0 or 1.

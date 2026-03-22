@@ -1,5 +1,4 @@
 #include "sorting/insertion_sort.h"
-#include "sorting/sort_algorithm.h"
 
 // InsertionSort::InsertionSort(std::vector<int>& arr)
 //             : SortAlgorithm(arr), i((arr.size() > 1) ? 1 : 0), j(0)
