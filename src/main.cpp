@@ -224,9 +224,18 @@ int main()
                             arr[event.a] = event.value;
                             break;
 
+                        case OpType::Key:
+                            state.markKey(event.a, arr[event.a]);
+
                         default:
                             break;
                     }
+                }
+
+                // Reapply key to vector
+                if (state.hasKey)
+                {
+                    state.markKey(state.keyIndex, arr[state.keyIndex]);
                 }
 
                 timer -= stepDelay;

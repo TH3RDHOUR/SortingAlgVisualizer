@@ -11,12 +11,6 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
     {
         int height = arr[i];
 
-        // Override key's height for better visualization.
-        if (i == state.keyIndex && state.hasKey)
-        {
-            height = state.keyValue;
-        }
-
         // Compute interpolated X position if the bar is swapping.
         float xPos = i * rectWidth; // Default position.
 

@@ -9,8 +9,8 @@ SortAlgorithm* createAlgorithm(int selectedAlg)
     {
         case 0:
             return new BubbleSort();
-        // case 1:
-        //     return new SelectionSort(arr);
+        case 1:
+            return new SelectionSort();
         // case 2:
         //     return new InsertionSort(arr);
     }

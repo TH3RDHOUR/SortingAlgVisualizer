@@ -9,8 +9,8 @@ enum class OpType {
     Swap,
     Overwrite,
     Sorted,
-    MarkPivot,
-    MarkKey
+    Pivot,
+    Key,
 };
 
 struct SortEvent {

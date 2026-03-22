@@ -1,58 +1,35 @@
 #include "sorting/selection_sort.h"
 
-// SelectionSort::SelectionSort(std::vector<int>& arr)
-//             : SortAlgorithm(arr), i(0), j((arr.size() > 1) ? 1 : 0) // Edge case if arr.size is 0 or 1.
-// {
-//     // Resize & set roles vector to the size of bar vector.
-//     // state.roles.resize(m_arr.size());
-//     // state.resetRoles(m_arr.size());
-    
-//     min_idx = j;
-// }
+void SelectionSort::run(std::vector<int>& m_arr)
+{
+    int n = m_arr.size();
 
-// bool SelectionSort::step(SortOp& op)
-// {
-//     int n = m_arr.size();
-//     // Reset roles vector to all default.
-//     //state.resetRoles(n);
+    for (int i = 0; i < n - 1; ++i)
+    {
+        int min_idx = i;
 
-//     // Mark all bars as sorted starting from 0 to i.
-//     for (int k = 0; k < i; k++)
-//     {
-//         //state.markSorted(k);
-//     }
+        // Trigger a key set event.
+        if (onEvent) onEvent({OpType::Key, min_idx, -1, 0});
 
-//     // Sorting is finished.
-//     if (i >= n - 1)
-//     {
-//         for (int k = 0; k < n; k++)
-//         {
-//             //state.markSorted(i);
-//         }
-//         return false;
-//     }
+        for (int j = i + 1; j < n; ++j)
+        {
+            // Trigger a compare event.
+            if (onEvent) onEvent({OpType::Compare, j, min_idx, 0});
 
-//     // INNER LOOP: Compare & swap min_idx with j.
-//     // j is less than size, continue comparing & getting smallest index.
-//     if (j < n)
-//     {
-//         // Mark both indicies that are being compared.
-//         //state.markComparingPair(min_idx, j);
+            if (m_arr[j] < m_arr[min_idx])
+            {
+                min_idx = j;
+                // Trigger a key set event.
+                if (onEvent) onEvent({OpType::Key, min_idx, -1, 0});
+            }
+        }
 
-//         if (m_arr[j] < m_arr[min_idx])
-//         {
-//             min_idx = j;
-//         }
+        std::swap(m_arr[i], m_arr[min_idx]);
 
-//         j++;
-//     }
-//     // j has reached the end, swap & start over in new unsorted region.
-//     else
-//     {
-//         std::swap(m_arr[min_idx], m_arr[i]);
-//         i++;
-//         j = i + 1;
-//         min_idx = i;
-//     }
-//     return true;
-// }
+        // Trigger a swap event.
+        if (onEvent) onEvent({OpType::Swap, i, min_idx, 0});
+
+        // Trigger sorted event for the last element in this pass
+        if (onEvent) onEvent({OpType::Sorted, i, -1, 0});
+    }
+}
