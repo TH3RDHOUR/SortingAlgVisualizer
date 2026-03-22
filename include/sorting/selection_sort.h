@@ -3,17 +3,17 @@
 
 #include "sorting/sort_algorithm.h"
 
-class SelectionSort : public SortAlgorithm
-{
-private:
-    int i;
-    int j;
-    int min_idx;
+// class SelectionSort : public SortAlgorithm
+// {
+// private:
+//     int i;
+//     int j;
+//     int min_idx;
 
-public:
-    SelectionSort(std::vector<int>& m_arr);
+// public:
+//     SelectionSort(std::vector<int>& m_arr);
 
-    bool step(SortOp& op) override;
-};
+//     bool step(SortOp& op) override;
+// };
 
 #endif

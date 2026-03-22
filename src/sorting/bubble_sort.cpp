@@ -1,47 +1,26 @@
 #include "sorting/bubble_sort.h"
-#include "sorting/sort_algorithm.h"
 
-// Constructor.
-BubbleSort::BubbleSort(std::vector<int>& arr)
-        : SortAlgorithm(arr), i(0), j(0), swapPending(false) {}
-
-// Overloaded method
-bool BubbleSort::step(SortOp& op)
+void BubbleSort::run(std::vector<int>& m_arr)
 {
     int n = m_arr.size();
 
-    // Sorting finished
-    if (i >= n - 1)
-        return false;
-
-    // Inner loop finished, move to next pass
-    if (j >= n - i - 1)
+    for (int i = 0; i < n - 1; i++)
     {
-        // Mark last element as sorted, reset j & increment i.
-        op.type = OpType::Sorted;
-        op.a = n - 1 - i;
-        j = 0;
-        i++;
-        return true;
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            // Trigger a compare event.
+            if (onEvent) onEvent({OpType::Compare, j, j + 1, 0});
+
+            if (m_arr[j] > m_arr[j + 1])
+            {
+                // Actually swap the array values.
+                std::swap(m_arr[j], m_arr[j + 1]);
+
+                // Trigger a swap event.
+                if (onEvent) onEvent({OpType::Swap, j, j + 1, 0});
+            }
+        }
+        // Trigger sorted event for the last element in this pass
+        if (onEvent) onEvent({OpType::Sorted, n - 1 - i, -1, 0});
     }
-
-    // Set operations to be compared.
-    op.a = j;
-    op.b = j + 1;
-
-    // If elements are swapping or just comparing.
-    if (m_arr[j] > m_arr[j + 1])
-    {
-        op.type = OpType::Swap;
-        std::swap(m_arr[j], m_arr[j + 1]);
-    }
-    else
-    {
-        op.type = OpType::Compare;
-    }
-
-    // Move to next pair.
-    j++;
-
-    return true;
 }

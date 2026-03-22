@@ -1,3 +1,6 @@
+/*
+This file establishes the struct to hold the operations done by each algorithm.
+*/
 #ifndef SORT_OP_H
 #define SORT_OP_H
 
@@ -10,7 +13,7 @@ enum class OpType {
     MarkKey
 };
 
-struct SortOp {
+struct SortEvent {
     OpType type;
     int a = -1;
     int b = -1;

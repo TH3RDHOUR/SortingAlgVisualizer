@@ -3,17 +3,17 @@
 
 #include "sorting/sort_algorithm.h"
 
-class InsertionSort : public SortAlgorithm
-{
-private:
-    int i;
-    int j;
-    int key;
+// class InsertionSort : public SortAlgorithm
+// {
+// private:
+//     int i;
+//     int j;
+//     int key;
 
-public:
-    InsertionSort(std::vector<int>& m_arr);
+// public:
+//     InsertionSort(std::vector<int>& m_arr);
 
-    bool step(SortOp& op) override;
-};
+//     bool step(SortOp& op) override;
+// };
 
 #endif

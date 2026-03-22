@@ -4,6 +4,6 @@
 #include <vector>
 #include "sorting/sort_algorithm.h"
 
-SortAlgorithm* createAlgorithm(std::vector<int>& arr, int selectedAlg);
+SortAlgorithm* createAlgorithm(int selectedAlg);
 
 #endif

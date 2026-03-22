@@ -9,6 +9,7 @@
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
 #include "sorting_factory/create_algorithm.h"
+#include "core/recorder.h"
 
 int main()
 {
@@ -62,13 +63,12 @@ int main()
 
     // Vector of integers.
     std::vector<int> arr(size);
-    std::vector<int> logicalArr(size);
 
     VisualState state;
     state.roles.resize(arr.size());
 
     // Event queue for animations.
-    std::queue<SortOp> opQueue;
+    std::queue<SortEvent> eventQueue;
 
     // Obtain a seed form a hardware source.
     std::random_device rd;
@@ -76,10 +76,9 @@ int main()
     std::mt19937 gen(rd());
 
     initVector(arr, gen, state);
-    logicalArr = arr;
 
     // Initial state of object based on first algorithm choice.
-    SortAlgorithm* alg = createAlgorithm(logicalArr, 0);
+    SortAlgorithm* alg = createAlgorithm(0);
 
     sf::Clock deltaClock;
 
@@ -131,31 +130,59 @@ int main()
             {
                 state.resetRoles(arr.size());
                 initVector(arr, gen, state);
-                logicalArr = arr;
-                sorted = false; // To cover when fully sorted
             }
-            // Delete object & create a new one for selected algorithm. 
+            // Clear the previous queue.
+            while (!eventQueue.empty()) eventQueue.pop(); 
+
+            // Clear any active animations.
+            state.activeSwaps.clear();
+
+            // Create working copy.
+            std::vector<int> workingArr = arr;
+
+            // Recreate algorithm. 
             delete alg;
-            alg = createAlgorithm(logicalArr, selectedAlg);
+            alg = createAlgorithm(selectedAlg);
+
+            // Run algorithm.
+            alg->onEvent = [&](const SortEvent& e)
+            {
+                eventQueue.push({e.type, e.a, e.b, e.value}); // Enqueue event for animation
+            };
+
+            alg->run(workingArr);
+
+            // Reset flags.
             sorting = true;
             sortedEver = true;
-            while (!opQueue.empty()) opQueue.pop(); // Clear the queue.
+            sorted = false;
+            timer = 0.0f; // Reset timer from previous sorts.
         }
 
-        ImGui::SameLine();
+        ImGui::SameLine(); // Buttons on same line on screen.
 
         // Reset Button resets the vector displayed on screen.
         if (ImGui::Button("Reset"))
         {
+            // Clear the previous queue.
+            while (!eventQueue.empty()) eventQueue.pop(); 
+
+            // Clear any active animations.
+            state.activeSwaps.clear();
+        
+            // Re-initialize vector.
+            state.resetRoles(arr.size());
+            initVector(arr, gen, state);
+
+            // Recreate algorithm.
+            delete alg;
+            alg = createAlgorithm(selectedAlg);
+
+            // Reset flags.
             sorting = false;
             sorted = false;
             sortedEver = false;
-            state.resetRoles(arr.size());
-            initVector(arr, gen, state);
-            logicalArr = arr;
-            delete alg;
-            alg = createAlgorithm(logicalArr, selectedAlg);
-            while (!opQueue.empty()) opQueue.pop(); // Clear the queue.
+            timer = 0.0f; // Reset timer from previous sorts.
         }
 
         ImGui::End();
@@ -165,53 +192,63 @@ int main()
         stepDelay = 1.0f / speed;
         state.swapSpeed = speed / 10.0f;
 
-        if (sorting && state.activeSwaps.empty())
+        // Main sorting logic.
+        if (sorting)
         {
             timer += deltaTime;
-            while (timer >= stepDelay)
-            {
-                SortOp op;
-                bool stillSorting = alg->step(op);
 
-                if (!stillSorting)
+            while (timer >= stepDelay && !eventQueue.empty())
+            {
+                if (state.activeSwaps.empty())
                 {
-                    sorting = false;
-                    break;
+                    // Operation object to be visualized.
+                    SortEvent event = eventQueue.front();
+                    eventQueue.pop();
+
+                    // Reset all bars visually that are not marked as sorted.
+                    state.resetNonSorted(arr.size());
+
+                    switch (event.type)
+                    {
+                        case OpType::Compare:
+                            state.markComparingPair(event.a, event.b);
+                            break;
+
+                        case OpType::Swap:
+                            state.activeSwaps.push_back({event.a, event.b, 0.0f});
+                            state.markComparingPair(event.a, event.b);
+                            break;
+
+                        case OpType::Sorted:
+                            state.markSorted(event.a);
+                            break;
+                        
+                        case OpType::Overwrite:
+                            arr[event.a] = event.value;
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
 
-                opQueue.push(op);
                 timer -= stepDelay;
             }
-        }
 
-        // Main sorting logic.
-        // 1. Only process if there's no active animation & enough time has passed.
-        if (state.activeSwaps.empty() && !opQueue.empty())
-        {
-            SortOp op = opQueue.front();
-            opQueue.pop();
-
-            state.resetNonSorted(arr.size());
-
-            switch (op.type)
+            // Finish condition.
+            if (eventQueue.empty() && state.activeSwaps.empty())
             {
-                case OpType::Compare:
-                    state.markComparingPair(op.a, op.b);
-                    break;
-                case OpType::Swap:
-                    state.activeSwaps.push_back({op.a, op.b, 0.0f});
-                    state.markComparingPair(op.a, op.b);
-                    break;
-                case OpType::Sorted:
-                    state.markSorted(op.a);
-                    break;
-                default:
-                    break;
+                sorting = false;
+                sorted = true;
+
+                for (int k = 0; k < arr.size(); ++k)
+                {
+                    state.markSorted(k);
+                }
             }
         }
 
-        // BLOCK LOGIC while animating
-        // 2. Update ongoing swap animations.
+        // Update ongoing swap animations.
         for (auto it = state.activeSwaps.begin(); it != state.activeSwaps.end(); )
         {
             it->progress += deltaTime * state.swapSpeed;
@@ -224,17 +261,6 @@ int main()
             else
             {
                 ++it;
-            }
-        }
-
-        // 3. Final completion check.
-        if (!sorted && !sorting && sortedEver && opQueue.empty() && state.activeSwaps.empty())
-        {
-            sorted = true;
-            // Make sure all bars marked sorted when finished.
-            for (int k = 0; k < arr.size(); ++k)
-            {
-                state.markSorted(k);
             }
         }
 
@@ -253,5 +279,7 @@ int main()
         window.display();
     }
 
+    // Delete algorithm.
+    delete alg;
     ImGui::SFML::Shutdown();
 }

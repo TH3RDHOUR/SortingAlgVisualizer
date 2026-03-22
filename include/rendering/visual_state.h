@@ -1,3 +1,7 @@
+/*
+This file establishes the visual state of an algorithm, allows for changing the 
+visual representation of bars for each value in the main vector.
+*/
 #ifndef VISUAL_STATE_H
 #define VISUAL_STATE_H
 
