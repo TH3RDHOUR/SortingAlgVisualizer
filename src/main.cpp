@@ -13,17 +13,14 @@
 
 int main()
 {
-    // Get current Monitor resolution
+    // Get current Monitor resolution & set window size to around 90% of that.
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
-
-    // Reduce the window size to around 90%.
     sf::Vector2u windowSize = desktopMode.size;
     unsigned int windowWidth = windowSize.x * 0.9f;
     unsigned int windowHeight = windowSize.y * 0.85f;
 
-    // Create the window.
+    // Create the window & set framerate.
     sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Sorting Visualizer");
-    // Slow down Framerate to see the swaps take place.
     window.setFramerateLimit(120);
 
     // Center the screen.
@@ -47,7 +44,6 @@ int main()
     float stepDelay = 0.05f;
     float speed = 20.0f;
     float timer = 0.0f;
-    float algoTimer = 0.0f;
 
     // Sorting variables.
     bool sorting = false;
@@ -60,10 +56,10 @@ int main()
 
     // Size of vector.
     int size = 32;
-
     // Vector of integers.
     std::vector<int> arr(size);
 
+    // Visual state object for the algorithm.
     VisualState state;
     state.roles.resize(arr.size());
 
@@ -116,13 +112,12 @@ int main()
 
         // Add the slider widget
         ImGui::SliderFloat("Sort Speed (ops/sec)", &speed, 1.0f, 500.0f);
-
         ImGui::Text("Current slider value: %.3f", speed);
 
         // Dropdown Algorithm Selector
         ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
 
-        // Sort Button calls the sorting.
+        // Sort Button to initiate teh selected algorithm.
         if (ImGui::Button("Sort"))
         {
             // If button is pressed while algorithm is running reset the vector.
@@ -131,25 +126,25 @@ int main()
                 state.resetRoles(arr.size());
                 initVector(arr, gen, state);
             }
-            // Clear the previous queue.
-            while (!eventQueue.empty()) eventQueue.pop(); 
 
-            // Clear any active animations.
+            // Clear the previous queue & any active animations.
+            while (!eventQueue.empty()) eventQueue.pop(); 
             state.activeSwaps.clear();
 
-            // Create working copy.
+            // Create working copy for algorithm.
             std::vector<int> workingArr = arr;
 
             // Recreate algorithm. 
             delete alg;
             alg = createAlgorithm(selectedAlg);
 
-            // Run algorithm.
+            // Set Callback before running algorithm.
             alg->onEvent = [&](const SortEvent& e)
             {
                 eventQueue.push({e.type, e.a, e.b, e.value}); // Enqueue event for animation
             };
 
+            // Run algorithm.
             alg->run(workingArr);
 
             // Reset flags.
@@ -187,7 +182,7 @@ int main()
 
         ImGui::End();
 
-        // Keep track of time elapsed for speed of sorting.
+        // Animation timing variables.
         float deltaTime = dt.asSeconds();
         stepDelay = 1.0f / speed;
         state.swapSpeed = speed / 10.0f;
@@ -241,6 +236,7 @@ int main()
                 sorting = false;
                 sorted = true;
 
+                // Make sure all bars are marked sorted.
                 for (int k = 0; k < arr.size(); ++k)
                 {
                     state.markSorted(k);
@@ -272,14 +268,12 @@ int main()
 
         drawVector(arr, state, window);
 
-        // Render ImGui Content.
+        // Render ImGui & SFML Content.
         ImGui::SFML::Render(window);
-
-        // Render SFML content.
         window.display();
     }
 
-    // Delete algorithm.
+    // Window closed, delete algorithm & shutdown.
     delete alg;
     ImGui::SFML::Shutdown();
 }
