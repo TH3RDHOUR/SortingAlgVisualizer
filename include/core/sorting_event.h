@@ -8,10 +8,14 @@ enum class OpType {
     Compare,
     ComparePair,
     Swap,
+    Shift,
     Overwrite,
     Sorted,
     Pivot,
     Key,
+    KeyPickup,
+    KeyMove,
+    KeyPlace,
 };
 
 struct SortEvent {

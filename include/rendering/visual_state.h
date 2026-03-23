@@ -16,12 +16,19 @@ enum class BarRole
     Key
 };
 
-// Help animate the swapping.
-struct SwapAnimation
+// Help with animating any movement of bars.
+struct Animation
 {
-    int indexA;
-    int indexB;
-    float progress; // 0.0 -> 1.0
+    int fromA;
+    int toA;
+
+    int fromB = -1;
+    int toB = -1;
+
+    int valueA;
+    int valueB;
+
+    float progress;
 };
 
 struct VisualState
@@ -32,9 +39,13 @@ struct VisualState
     int keyIndex = 0;
     int keyValue = 0;
     bool hasKey = false;
+    bool hasFloatingKey = false;
+    int keyTargetIndex = 0; // Where key is hovering.
+    int hiddenIndex = -1; // Bar to be hidden.
+    int movingFromIndex = -1; // Second hidden index for moving animation.
 
-    // Keep track of all currently active swaps in algorithm.
-    std::vector<SwapAnimation> activeSwaps;
+    // Keep track of all currently active animations.
+    std::vector<Animation> activeAnimations;
     float swapSpeed = 5.0f;
 
     // Reset all roles to default.

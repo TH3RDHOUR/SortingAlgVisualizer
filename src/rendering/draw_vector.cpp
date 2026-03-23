@@ -9,27 +9,44 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
 
     for (int i = 0; i < arr.size(); ++i)
     {
+        // Compute interpolated X position if the bar is swapping and/or moving.
+        float xPos = i * rectWidth; // Default position.
         int height = arr[i];
 
-        // Compute interpolated X position if the bar is swapping.
-        float xPos = i * rectWidth; // Default position.
+        bool isAnimating = false;
+        bool isGhost = false;
+        bool isShift = false;
 
-        // For each swap in activeSwaps update swapping animation.
-        for (const auto& swap : state.activeSwaps)
+        for (const auto& anim : state.activeAnimations)
         {
-            if (i == swap.indexA)
+            if (i == anim.fromA)
             {
-                xPos = (1.0f - swap.progress) * swap.indexA * rectWidth
-                     + swap.progress * swap.indexB * rectWidth;
+                xPos = (1.0f - anim.progress) * anim.fromA * rectWidth
+                    + anim.progress * anim.toA * rectWidth;
+                height = anim.valueA;
+                isAnimating = true;
             }
-            else if (i == swap.indexB)
+
+            if (anim.fromB != -1 && i == anim.fromB)
             {
-                xPos = (1.0f - swap.progress) * swap.indexB * rectWidth
-                     + swap.progress * swap.indexA * rectWidth;
+                xPos = (1.0f - anim.progress) * anim.fromB * rectWidth
+                    + anim.progress * anim.toB * rectWidth;
+                height = anim.valueB;
+                isAnimating = true;
             }
         }
 
-        // Set up rectangle object and position.
+        // Ghost only the hidden index (key target)
+        if (i == state.hiddenIndex)
+        {
+            sf::RectangleShape ghost(sf::Vector2f(rectWidth - 5.f, 5.f));
+            ghost.setPosition(sf::Vector2f(xPos, windowHeight - 5.f));
+            ghost.setFillColor(sf::Color(200, 200, 200, 100));
+            window.draw(ghost);
+            continue;
+        }
+
+        // Draw rectangle (animated or static)
         sf::RectangleShape rectangle(sf::Vector2f(rectWidth - 5.f, height));
         rectangle.setPosition(sf::Vector2f(xPos, windowHeight - height));
 
@@ -43,5 +60,33 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         }
 
         window.draw(rectangle);
+    }
+
+    // Determine the tallest bar height.
+    int maxHeight = 0;
+    for (int h : arr) if (h > maxHeight) maxHeight = h;
+
+    // Animate the key bar separately
+    if (state.hasFloatingKey)
+    {
+        float x = state.keyTargetIndex * rectWidth;
+
+        // Animate x-position if we added a key animation
+        for (const auto& anim : state.activeAnimations)
+        {
+            if (anim.fromA == -2) // Special ID for floating key animation
+            {
+                x = (1.0f - anim.progress) * anim.fromA * rectWidth
+                + anim.progress * anim.toA * rectWidth;
+            }
+        }
+
+        float y = windowHeight - maxHeight - 50.0f; // floating above all bars
+
+        sf::RectangleShape keyRect(sf::Vector2f(rectWidth - 5.f, state.keyValue));
+        keyRect.setPosition(sf::Vector2f(x, y));
+        keyRect.setFillColor(sf::Color::Blue);
+
+        window.draw(keyRect);
     }
 }

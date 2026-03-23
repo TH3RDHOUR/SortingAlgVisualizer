@@ -9,34 +9,31 @@ void InsertionSort::run(std::vector<int>& m_arr)
         int key = m_arr[i];
 
         // Trigger a key set event.
-        if (onEvent) onEvent({OpType::Key, i, -1, key});
+        if (onEvent) onEvent({OpType::KeyPickup, i, -1, key});
 
         int j = i - 1;
 
+        // Trigger a compare event.
+        if (onEvent) onEvent({OpType::Compare, j, -1, 0});
+
         while (j >= 0 && m_arr[j] > key)
         {
-            // Trigger a compare event.
-            if (onEvent) onEvent({OpType::Compare, j, -1, 0});
-
             m_arr[j + 1] = m_arr[j];
 
-            // Trigger a compare event.
-            if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, m_arr[j]});
+            // Trigger an overwrite event.
+            if (onEvent) onEvent({OpType::Shift, j, j + 1, m_arr[j]});
 
             // Move the key visually left.
-            if (onEvent) onEvent({OpType::Key, j, -1, key});
+            if (onEvent) onEvent({OpType::KeyMove, j, -1, key});
 
             j--;
         }
         m_arr[j + 1] = key;
 
-        // Trigger a swap event.
-        if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, key});
-
         // Trigger a key set event.
-        if (onEvent) onEvent({OpType::Key, j + 1, -1, key});
+        if (onEvent) onEvent({OpType::KeyPlace, j + 1, -1, key});
 
-        for (int k = j; k < i; ++k)
+        for (int k = j; k <= i; ++k)
         {
             // Trigger sorted event.
             if (onEvent) onEvent({OpType::Sorted, k, -1, 0});

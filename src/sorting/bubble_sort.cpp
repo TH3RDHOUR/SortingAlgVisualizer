@@ -9,7 +9,7 @@ void BubbleSort::run(std::vector<int>& m_arr)
         for (int j = 0; j < n - i - 1; j++)
         {
             // Trigger a compare event.
-            if (onEvent) onEvent({OpType::Compare, j, j + 1, 0});
+            if (onEvent) onEvent({OpType::ComparePair, j, j + 1, 0});
 
             if (m_arr[j] > m_arr[j + 1])
             {

@@ -130,7 +130,7 @@ int main()
 
             // Clear the previous queue & any active animations.
             while (!eventQueue.empty()) eventQueue.pop(); 
-            state.activeSwaps.clear();
+            state.activeAnimations.clear();
 
             // Create working copy for algorithm.
             std::vector<int> workingArr = arr;
@@ -165,7 +165,7 @@ int main()
             while (!eventQueue.empty()) eventQueue.pop(); 
 
             // Clear any active animations.
-            state.activeSwaps.clear();
+            state.activeAnimations.clear();
         
             // Re-initialize vector.
             state.resetRoles(arr.size());
@@ -196,14 +196,14 @@ int main()
 
             while (timer >= stepDelay && !eventQueue.empty())
             {
-                if (state.activeSwaps.empty())
+                if (state.activeAnimations.empty())
                 {
+                    // Reset all bars visually that are not marked as sorted.
+                    state.resetNonSorted(arr.size());
+
                     // Operation object to be visualized.
                     SortEvent event = eventQueue.front();
                     eventQueue.pop();
-
-                    // Reset all bars visually that are not marked as sorted.
-                    state.resetNonSorted(arr.size());
 
                     switch (event.type)
                     {
@@ -216,8 +216,23 @@ int main()
                             break;
 
                         case OpType::Swap:
-                            state.activeSwaps.push_back({event.a, event.b, 0.0f});
-                            state.markComparingPair(event.a, event.b);
+                            state.activeAnimations.push_back({
+                                event.a, event.b,
+                                event.b, event.a,
+                                arr[event.a], arr[event.b],
+                                0.0f
+                            });
+                            break;
+
+                        case OpType::Shift:
+                            state.activeAnimations.push_back({
+                                event.a, event.b,
+                                -1, -1,
+                                event.value, 0,
+                                0.0f
+                            });
+
+                            state.movingFromIndex = event.a;
                             break;
 
                         case OpType::Sorted:
@@ -230,6 +245,26 @@ int main()
 
                         case OpType::Key:
                             state.markKey(event.a, arr[event.a]);
+                            break;
+
+                        case OpType::KeyPickup:
+                            state.hasFloatingKey = true;
+                            state.keyValue = event.value;
+                            state.keyTargetIndex = event.a;
+                            state.hiddenIndex = event.a;
+                            break;
+
+                        case OpType::KeyMove:
+                            state.keyTargetIndex = event.a;
+                            state.hiddenIndex = event.a;
+                            break;
+
+                        case OpType::KeyPlace:
+                            state.hasFloatingKey = false;
+                            state.hiddenIndex = -1;
+                            arr[event.a] = event.value;
+                            break;
+
 
                         default:
                             break;
@@ -246,7 +281,7 @@ int main()
             }
 
             // Finish condition.
-            if (eventQueue.empty() && state.activeSwaps.empty())
+            if (eventQueue.empty() && state.activeAnimations.empty())
             {
                 sorting = false;
                 sorted = true;
@@ -259,15 +294,27 @@ int main()
             }
         }
 
-        // Update ongoing swap animations.
-        for (auto it = state.activeSwaps.begin(); it != state.activeSwaps.end(); )
+        // Update all ongoing animations.
+        for (auto it = state.activeAnimations.begin(); it != state.activeAnimations.end(); )
         {
             it->progress += deltaTime * state.swapSpeed;
 
             if (it->progress >= 1.0f)
             {
-                std::swap(arr[it->indexA], arr[it->indexB]);
-                it = state.activeSwaps.erase(it);
+                // Apply final state
+
+                // A always moves
+                arr[it->toA] = it->valueA;
+
+                // If it's a swap, apply B too.
+                if (it->fromB != -1)
+                {
+                    arr[it->toB] = it->valueB;
+                }
+
+                state.movingFromIndex = -1;
+
+                it = state.activeAnimations.erase(it);
             }
             else
             {
