@@ -77,15 +77,18 @@ struct VisualState
         return roles;
     }
 
-    void markComparing(int num)
+    void markComparing(int index)
     {
-        if (num < roles.size()) roles[num] = BarRole::Comparing;
+        if (index < roles.size() && roles[index] != BarRole::Sorted) 
+            roles[index] = BarRole::Comparing;
     }
 
     // Mark two bars as comparing if it is not the last element.
     void markComparingPair(int index1, int index2) {
-        if (index1 < roles.size()) roles[index1] = BarRole::Comparing;
-        if (index2 < roles.size()) roles[index2] = BarRole::Comparing;
+        if (index1 < roles.size() && roles[index1] != BarRole::Sorted) 
+            roles[index1] = BarRole::Comparing;
+        if (index2 < roles.size() && roles[index2] != BarRole::Sorted) 
+            roles[index2] = BarRole::Comparing;
     }
 
     // Mark the bar as sorted
@@ -106,7 +109,8 @@ struct VisualState
         keyIndex = num;
         keyValue = size;
         hasKey = true;
-        if (num < roles.size()) roles[num] = BarRole::Key;
+        if (num < roles.size() && roles[num] != BarRole::Sorted) 
+            roles[num] = BarRole::Key;
     }
 };
 
