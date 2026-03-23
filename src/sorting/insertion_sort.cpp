@@ -1,63 +1,36 @@
 #include "sorting/insertion_sort.h"
 
-// InsertionSort::InsertionSort(std::vector<int>& arr)
-//             : SortAlgorithm(arr), i((arr.size() > 1) ? 1 : 0), j(0)
-// {
-//     // Resize & set roles vector to the size of bar vector.
-//     // state.roles.resize(m_arr.size());
-//     // state.resetRoles(m_arr.size());
+void InsertionSort::run(std::vector<int>& m_arr)
+{
+    int n = m_arr.size();
 
-//     key = arr[i];
-// }
+    for (int i = 1; i < n; i++)
+    {
+        int key = m_arr[i];
 
-// bool InsertionSort::step(SortOp& op)
-// {
-//     int n = m_arr.size();
+        // Trigger a key set event.
+        if (onEvent) onEvent({OpType::Key, i, -1, key});
 
-//     //state.resetRoles(n);
+        int j = i - 1;
 
-//     if (i >= n)
-//     {
-//         // Ensure the final bars are marked as sorted.
-//         for (int k = 0; k < n; k++)
-//         {
-//             //state.markSorted(k);
-//         }
-//         return false;
-//     }
+        while (j >= 0 && m_arr[j] > key)
+        {
+            // Trigger a compare event.
+            if (onEvent) onEvent({OpType::Compare, j, -1, 0});
 
-//     // Mark all sorted bars (last i elements).
-//     for (int k = 0; k <= i; k++)
-//     {
-//         //state.markSorted(k);
-//     }
+            m_arr[j + 1] = m_arr[j];
 
-//     if (j >= 0 && m_arr[j] > key)
-//     {
-//         // Mark both indicies that are being compared.
-//         //state.markComparing(j);
+            // Trigger a compare event.
+            if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, m_arr[j]});
 
-//         m_arr[j + 1] = m_arr[j];
+            j--;
+        }
+        m_arr[j + 1] = key;
 
-//         if (j + 1 == i)
-//         {
-//             //state.markSorted(i);
-//         }
+        // Trigger a swap event.
+        if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, key});
 
-//         //state.markKey(j + 1, key);
-//         j--;
-//     }
-//     else
-//     {
-//         m_arr[j + 1] = key;
-//         //state.markKey(j + 1, key);
-//         i++;
-//         if (i < n)
-//         {
-//             key = m_arr[i];
-//             j = i - 1;
-//         }
-//     }
-
-//     return true;
-// }
+        // Trigger sorted event for the last element in this pass
+        if (onEvent) onEvent({OpType::Sorted, i, -1, 0});
+    }
+}

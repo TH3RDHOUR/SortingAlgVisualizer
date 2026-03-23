@@ -6,6 +6,7 @@ This file establishes the struct to hold the operations done by each algorithm.
 
 enum class OpType {
     Compare,
+    ComparePair,
     Swap,
     Overwrite,
     Sorted,

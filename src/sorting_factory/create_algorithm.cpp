@@ -11,8 +11,8 @@ SortAlgorithm* createAlgorithm(int selectedAlg)
             return new BubbleSort();
         case 1:
             return new SelectionSort();
-        // case 2:
-        //     return new InsertionSort(arr);
+        case 2:
+             return new InsertionSort();
     }
     
     return nullptr;

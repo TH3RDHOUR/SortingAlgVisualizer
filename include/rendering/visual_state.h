@@ -79,7 +79,7 @@ struct VisualState
 
     void markComparing(int index)
     {
-        if (index < roles.size() && roles[index] != BarRole::Sorted) 
+        if (index < roles.size()) 
             roles[index] = BarRole::Comparing;
     }
 

@@ -208,6 +208,10 @@ int main()
                     switch (event.type)
                     {
                         case OpType::Compare:
+                            state.markComparing(event.a);
+                            break;
+
+                        case OpType::ComparePair:
                             state.markComparingPair(event.a, event.b);
                             break;
 

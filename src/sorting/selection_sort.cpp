@@ -14,7 +14,8 @@ void SelectionSort::run(std::vector<int>& m_arr)
         for (int j = i + 1; j < n; ++j)
         {
             // Trigger a compare event.
-            if (onEvent) onEvent({OpType::Compare, j, min_idx, 0});
+            //if (onEvent) onEvent({OpType::Compare, j, min_idx, 0});
+            if (onEvent) onEvent({OpType::Compare, j, -1, 0});
 
             if (m_arr[j] < m_arr[min_idx])
             {
