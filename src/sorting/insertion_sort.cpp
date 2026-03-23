@@ -23,6 +23,9 @@ void InsertionSort::run(std::vector<int>& m_arr)
             // Trigger a compare event.
             if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, m_arr[j]});
 
+            // Move the key visually left.
+            if (onEvent) onEvent({OpType::Key, j, -1, key});
+
             j--;
         }
         m_arr[j + 1] = key;
@@ -30,7 +33,13 @@ void InsertionSort::run(std::vector<int>& m_arr)
         // Trigger a swap event.
         if (onEvent) onEvent({OpType::Overwrite, j + 1, -1, key});
 
-        // Trigger sorted event for the last element in this pass
-        if (onEvent) onEvent({OpType::Sorted, i, -1, 0});
+        // Trigger a key set event.
+        if (onEvent) onEvent({OpType::Key, j + 1, -1, key});
+
+        for (int k = j; k < i; ++k)
+        {
+            // Trigger sorted event.
+            if (onEvent) onEvent({OpType::Sorted, k, -1, 0});
+        }
     }
 }
