@@ -40,7 +40,7 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         }
 
         // Do not show the gap index below the floating key value.
-        if (i == gapIndex || isTargetofAnimation)
+        if (state.hasFloatingKey && (i == gapIndex || isTargetofAnimation))
         {
             continue;
         }
