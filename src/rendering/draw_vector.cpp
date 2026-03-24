@@ -17,13 +17,13 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         int height = arr[i];
 
         bool isAnimating = false;
-        bool isGhost = false;
-        bool isShift = false;
+        bool isTargetofAnimation = false;
 
         for (const auto& anim : state.activeAnimations)
         {
             if (i == anim.fromA)
             {
+                isTargetofAnimation = true;
                 xPos = (1.0f - anim.progress) * anim.fromA * rectWidth
                     + anim.progress * anim.toA * rectWidth;
                 height = anim.valueA;
@@ -40,7 +40,7 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         }
 
         // Do not show the gap index below the floating key value.
-        if (i == gapIndex)
+        if (i == gapIndex || isTargetofAnimation)
         {
             continue;
         }
