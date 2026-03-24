@@ -41,8 +41,8 @@ struct VisualState
     bool hasKey = false;
     bool hasFloatingKey = false;
     int keyTargetIndex = 0; // Where key is hovering.
-    int hiddenIndex = -1; // Bar to be hidden.
-    int movingFromIndex = -1; // Second hidden index for moving animation.
+    int movingFromIndex = -1; // Hidden index for moving animation.
+    int keyCurrentIndex = 0;
 
     // Keep track of all currently active animations.
     std::vector<Animation> activeAnimations;

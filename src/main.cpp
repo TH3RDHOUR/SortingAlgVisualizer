@@ -232,6 +232,16 @@ int main()
                                 0.0f
                             });
 
+                            // Key moves at the same time.
+                            state.activeAnimations.push_back({
+                                state.keyCurrentIndex, event.a,
+                                -1, -1,
+                                state.keyValue, 0,
+                                0.0f
+                            });
+
+                            state.keyCurrentIndex = event.a;
+                            state.keyTargetIndex = event.a;
                             state.movingFromIndex = event.a;
                             break;
 
@@ -250,18 +260,12 @@ int main()
                         case OpType::KeyPickup:
                             state.hasFloatingKey = true;
                             state.keyValue = event.value;
+                            state.keyCurrentIndex = event.a;
                             state.keyTargetIndex = event.a;
-                            state.hiddenIndex = event.a;
-                            break;
-
-                        case OpType::KeyMove:
-                            state.keyTargetIndex = event.a;
-                            state.hiddenIndex = event.a;
                             break;
 
                         case OpType::KeyPlace:
                             state.hasFloatingKey = false;
-                            state.hiddenIndex = -1;
                             arr[event.a] = event.value;
                             break;
 

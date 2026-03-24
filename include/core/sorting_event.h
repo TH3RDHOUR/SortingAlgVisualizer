@@ -14,7 +14,7 @@ enum class OpType {
     Pivot,
     Key,
     KeyPickup,
-    KeyMove,
+    //KeyMove,
     KeyPlace,
 };
 

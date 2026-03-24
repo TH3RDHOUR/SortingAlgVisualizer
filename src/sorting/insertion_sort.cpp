@@ -24,7 +24,7 @@ void InsertionSort::run(std::vector<int>& m_arr)
             if (onEvent) onEvent({OpType::Shift, j, j + 1, m_arr[j]});
 
             // Move the key visually left.
-            if (onEvent) onEvent({OpType::KeyMove, j, -1, key});
+            //if (onEvent) onEvent({OpType::KeyMove, j, -1, key});
 
             j--;
         }

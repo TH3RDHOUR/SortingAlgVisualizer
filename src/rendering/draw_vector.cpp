@@ -7,6 +7,9 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
     float windowWidth = window.getSize().x;
     float rectWidth = windowWidth / arr.size();
 
+    // Dervied state for floating key index.
+    int gapIndex = state.hasFloatingKey ? state.keyTargetIndex : -1;
+
     for (int i = 0; i < arr.size(); ++i)
     {
         // Compute interpolated X position if the bar is swapping and/or moving.
@@ -36,13 +39,9 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
             }
         }
 
-        // Ghost only the hidden index (key target)
-        if (i == state.hiddenIndex)
+        // Do not show the gap index below the floating key value.
+        if (i == gapIndex)
         {
-            sf::RectangleShape ghost(sf::Vector2f(rectWidth - 5.f, 5.f));
-            ghost.setPosition(sf::Vector2f(xPos, windowHeight - 5.f));
-            ghost.setFillColor(sf::Color(200, 200, 200, 100));
-            window.draw(ghost);
             continue;
         }
 
@@ -74,7 +73,7 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         // Animate x-position if we added a key animation
         for (const auto& anim : state.activeAnimations)
         {
-            if (anim.fromA == -2) // Special ID for floating key animation
+            if (anim.valueA == state.keyValue) // Special ID for floating key animation
             {
                 x = (1.0f - anim.progress) * anim.fromA * rectWidth
                 + anim.progress * anim.toA * rectWidth;
