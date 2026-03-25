@@ -18,13 +18,13 @@ void InsertionSort::run(std::vector<int>& m_arr)
 
         while (j >= 0 && m_arr[j] > key)
         {
+            // Trigger a compare event.
+            if (onEvent) onEvent({OpType::Compare, j, -1, 0});
+
             m_arr[j + 1] = m_arr[j];
 
             // Trigger an overwrite event.
             if (onEvent) onEvent({OpType::Shift, j, j + 1, m_arr[j]});
-
-            // Move the key visually left.
-            //if (onEvent) onEvent({OpType::KeyMove, j, -1, key});
 
             j--;
         }
