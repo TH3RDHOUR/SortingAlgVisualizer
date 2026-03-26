@@ -2,6 +2,7 @@
 #include "sorting/bubble_sort.h"
 #include "sorting/selection_sort.h"
 #include "sorting/insertion_sort.h"
+#include "sorting/merge_sort.h"
 
 std::unique_ptr<SortAlgorithm> createAlgorithm(int selectedAlg)
 {
@@ -12,7 +13,9 @@ std::unique_ptr<SortAlgorithm> createAlgorithm(int selectedAlg)
         case 1:
             return std::make_unique<SelectionSort>();
         case 2:
-             return std::make_unique<InsertionSort>();
+            return std::make_unique<InsertionSort>();
+        case 3:
+            return std::make_unique<MergeSort>();
     }
     
     return nullptr;
