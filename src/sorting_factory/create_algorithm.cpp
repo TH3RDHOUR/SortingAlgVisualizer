@@ -3,16 +3,16 @@
 #include "sorting/selection_sort.h"
 #include "sorting/insertion_sort.h"
 
-SortAlgorithm* createAlgorithm(int selectedAlg)
+std::unique_ptr<SortAlgorithm> createAlgorithm(int selectedAlg)
 {
     switch(selectedAlg)
     {
         case 0:
-            return new BubbleSort();
+            return std::make_unique<BubbleSort>();
         case 1:
-            return new SelectionSort();
+            return std::make_unique<SelectionSort>();
         case 2:
-             return new InsertionSort();
+             return std::make_unique<InsertionSort>();
     }
     
     return nullptr;

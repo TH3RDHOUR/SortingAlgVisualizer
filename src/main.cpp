@@ -10,7 +10,6 @@
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
 #include "sorting_factory/create_algorithm.h"
-#include "core/recorder.h"
 
 int main()
 {
@@ -75,7 +74,7 @@ int main()
     initVector(arr, gen, state);
 
     // Initial state of object based on first algorithm choice.
-    SortAlgorithm* alg = createAlgorithm(0);
+    std::unique_ptr<SortAlgorithm> alg = createAlgorithm(0);
 
     sf::Clock deltaClock;
 
@@ -136,7 +135,6 @@ int main()
             std::vector<int> workingArr = arr;
 
             // Recreate algorithm. 
-            delete alg;
             alg = createAlgorithm(selectedAlg);
 
             // Set Callback before running algorithm.
@@ -172,7 +170,6 @@ int main()
             initVector(arr, gen, state);
 
             // Recreate algorithm.
-            delete alg;
             alg = createAlgorithm(selectedAlg);
 
             // Reset flags.
@@ -340,6 +337,5 @@ int main()
     }
 
     // Window closed, delete algorithm & shutdown.
-    delete alg;
     ImGui::SFML::Shutdown();
 }

@@ -2,7 +2,8 @@
 #define CREATE_ALGORITHM_H
 
 #include "sorting/sort_algorithm.h"
+#include <memory>
 
-SortAlgorithm* createAlgorithm(int selectedAlg);
+std::unique_ptr<SortAlgorithm> createAlgorithm(int selectedAlg);
 
 #endif
