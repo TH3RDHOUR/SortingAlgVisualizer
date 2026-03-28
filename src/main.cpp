@@ -104,8 +104,9 @@ int main()
         // Update ImGui.
         ImGui::SFML::Update(window, dt);
 
-        // Set ImGui Window size.
-        ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_Always);
+        // Set ImGui Window size and position.
+        ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
 
         // Build ImGui UI (including the slider)
         ImGui::Begin("Sorting Speed Controller"); // Start a new ImGui window
@@ -178,6 +179,21 @@ int main()
             sortedEver = false;
             timer = 0.0f; // Reset timer from previous sorts.
         }
+
+        // Get this windo's size & position for second window.
+        ImVec2 firstPos = ImGui::GetWindowPos();
+        ImVec2 firstSize = ImGui::GetWindowSize();
+
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(firstPos.x + firstSize.x + 10, firstPos.y), ImGuiCond_Always);
+        // Set ImGui Window size.
+        ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+
+        // Algorithm Information window.
+        ImGui::Begin("Big O Notation");
+
+
 
         ImGui::End();
 
