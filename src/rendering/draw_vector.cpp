@@ -55,6 +55,8 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
             case BarRole::Sorted:    rectangle.setFillColor(sf::Color::Green); break;
             case BarRole::Comparing: rectangle.setFillColor(sf::Color::Red);   break;
             case BarRole::Key:       rectangle.setFillColor(sf::Color::Blue);  break;
+            case BarRole::LeftHalf:  rectangle.setFillColor(sf::Color(100, 150, 255)); break; // Soft Blue.
+            case BarRole::RightHalf: rectangle.setFillColor(sf::Color(255, 150, 100)); break; // Soft Orange.
             default:                 rectangle.setFillColor(sf::Color::White); break;
         }
 

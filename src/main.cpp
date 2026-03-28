@@ -265,7 +265,14 @@ int main()
                             state.hasFloatingKey = false;
                             arr[event.a] = event.value;
                             break;
+                        
+                        case OpType::MarkLeftRange:
+                            state.markLeftHalf(event.a, event.b);
+                            break;
 
+                        case OpType::MarkRightRange:
+                            state.markRightHalf(event.a, event.b);
+                            break;
 
                         default:
                             break;

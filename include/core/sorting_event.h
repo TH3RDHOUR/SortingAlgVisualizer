@@ -14,8 +14,9 @@ enum class OpType {
     Pivot,
     Key,
     KeyPickup,
-    //KeyMove,
     KeyPlace,
+    MarkLeftRange,
+    MarkRightRange,
 };
 
 struct SortEvent {

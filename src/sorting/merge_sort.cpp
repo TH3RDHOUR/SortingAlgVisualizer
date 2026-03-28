@@ -22,6 +22,10 @@ void MergeSort::mergeSort(std::vector<int>& m_arr, int left, int right)
 // Merge all the separated vectors.
 void MergeSort::merge(std::vector<int>& m_arr, int left, int mid, int right)
 {
+    // Mark the left and right half of the split vector.
+    if(onEvent) onEvent({OpType::MarkLeftRange, left, mid, 0});
+    if(onEvent) onEvent({OpType::MarkRightRange, mid + 1, right, 0});
+
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
@@ -41,14 +45,36 @@ void MergeSort::merge(std::vector<int>& m_arr, int left, int mid, int right)
     // Merge temp vectors back into m_arr[left...right]
     while (i < n1 && j < n2)
     {
+        // Trigger a compare event on indicies.
+        if (onEvent) onEvent({OpType::ComparePair, left + i, mid + 1 + j, 0});
         if (L[i] <= R[j])
         {
+            // Trigger a compare event to highlight the "winner" from previous comparison.
+            if (onEvent) onEvent({OpType::Compare, left + i, -1, 0});
+
             m_arr[k] = L[i];
+
+            // Trigger an overwrite event
+            //if (onEvent) onEvent({OpType::Overwrite, k, -1, L[i]});
+
+            if (onEvent) onEvent({OpType::KeyPickup, k, -1, L[i]});
+            if (onEvent) onEvent({OpType::KeyPlace, k, -1, L[i]});
+
             i++;
         }
         else
         {
+            // Trigger a compare event to highlight the "winner" from previous comparison.
+            if (onEvent) onEvent({OpType::Compare, mid + 1 + j, -1, 0});
+
             m_arr[k] = R[j];
+
+            // Trigger an overwrite event
+            //if (onEvent) onEvent({OpType::Overwrite, k, -1, R[j]});
+
+            if (onEvent) onEvent({OpType::KeyPickup, k, -1, R[j]});
+            if (onEvent) onEvent({OpType::KeyPlace, k, -1, R[j]});
+
             j++;
         }
         k++;
@@ -58,6 +84,10 @@ void MergeSort::merge(std::vector<int>& m_arr, int left, int mid, int right)
     while (i < n1)
     {
         m_arr[k] = L[i];
+
+        // Trigger an overwrite event
+        if (onEvent) onEvent({OpType::Overwrite, k, -1, L[i]});
+
         i++;
         k++;
     }
@@ -66,6 +96,10 @@ void MergeSort::merge(std::vector<int>& m_arr, int left, int mid, int right)
     while (j < n2)
     {
         m_arr[k] = R[j];
+
+        // Trigger an overwrite event
+        if (onEvent) onEvent({OpType::Overwrite, k, -1, R[j]});
+
         j++;
         k++;
     }

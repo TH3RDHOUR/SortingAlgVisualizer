@@ -13,7 +13,9 @@ enum class BarRole
     Comparing,
     Sorted,
     Pivot,
-    Key
+    Key,
+    LeftHalf,
+    RightHalf
 };
 
 // Help with animating any movement of bars.
@@ -75,7 +77,8 @@ struct VisualState
 
         for (int i = 0; i < size; i++)
         {
-            if (roles[i] != BarRole::Sorted)
+            // Only reset temporary visual properties.
+            if (roles[i] == BarRole::Comparing || roles[i] == BarRole::Key)
             {
                 roles[i] = BarRole::Default;
             }
@@ -122,6 +125,26 @@ struct VisualState
         hasKey = true;
         if (num < roles.size() && roles[num] != BarRole::Sorted) 
             roles[num] = BarRole::Key;
+    }
+
+    // Mark the left half of the vector.
+    void markLeftHalf(int start, int end)
+    {
+        for (int i = start; i <= end; i++)
+        {
+            if (roles[i] != BarRole::Sorted)
+                roles[i] = BarRole::LeftHalf;
+        }
+    }
+
+    // Mark the right half of the vector.
+    void markRightHalf(int start, int end)
+    {
+        for (int i = start; i <= end; i++)
+        {
+            if (roles[i] != BarRole::Sorted)
+                roles[i] = BarRole::RightHalf;
+        }
     }
 };
 
