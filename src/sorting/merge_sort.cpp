@@ -1,3 +1,9 @@
+/*
+Merge sort is a divide and conquer algorithm that recursively divides the vector in half
+until you are left with single element vectors. Then it compares left and right vector's 
+elements and places them into another vector in ascending order, it does this until we 
+return to a vector the same size as the starting one, fully sorted.
+*/
 #include "sorting/merge_sort.h"
 
 void MergeSort::run(std::vector<int>& m_arr)

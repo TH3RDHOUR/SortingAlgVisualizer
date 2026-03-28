@@ -1,3 +1,7 @@
+/*
+Selection sort traverses the unsorted region of the vector and finds the smallest element
+each pass, then swaps that with the next index of the "sorted" portion of the vector.
+*/
 #include "sorting/selection_sort.h"
 
 void SelectionSort::run(std::vector<int>& m_arr)
@@ -14,9 +18,9 @@ void SelectionSort::run(std::vector<int>& m_arr)
         for (int j = i + 1; j < n; ++j)
         {
             // Trigger a compare event.
-            //if (onEvent) onEvent({OpType::Compare, j, min_idx, 0});
             if (onEvent) onEvent({OpType::Compare, j, -1, 0});
 
+            // If found a new smallest element, set as min_idx.
             if (m_arr[j] < m_arr[min_idx])
             {
                 min_idx = j;
@@ -25,6 +29,7 @@ void SelectionSort::run(std::vector<int>& m_arr)
             }
         }
 
+        // Swap current i index with smallest element.
         std::swap(m_arr[i], m_arr[min_idx]);
 
         // Trigger a swap event.

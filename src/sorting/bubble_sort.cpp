@@ -1,3 +1,7 @@
+/*
+Bubble sort will always take the largest element and move it to the end of the unsorted
+portion of the vector until it is fully sorted (bubble up the largest value).
+*/
 #include "sorting/bubble_sort.h"
 
 void BubbleSort::run(std::vector<int>& m_arr)
@@ -8,12 +12,11 @@ void BubbleSort::run(std::vector<int>& m_arr)
     {
         for (int j = 0; j < n - i - 1; j++)
         {
-            // Trigger a compare event.
+            // Trigger a ComparePair event.
             if (onEvent) onEvent({OpType::ComparePair, j, j + 1, 0});
 
             if (m_arr[j] > m_arr[j + 1])
             {
-                // Actually swap the array values.
                 std::swap(m_arr[j], m_arr[j + 1]);
 
                 // Trigger a swap event.

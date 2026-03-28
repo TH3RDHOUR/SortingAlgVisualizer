@@ -6,7 +6,7 @@
 #include <random>
 #include <queue>
 #include <iostream>
-// Helpers.
+// Local files.
 #include "utils/init_vector.h"
 #include "rendering/draw_vector.h"
 #include "sorting_factory/create_algorithm.h"

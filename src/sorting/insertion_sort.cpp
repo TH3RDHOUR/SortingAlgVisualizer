@@ -1,3 +1,8 @@
+/*
+Insertion sort starts by making the first element part of the "sorted" portion of the 
+vector. Then it traverses the unsorted portion, inserting each element based on its
+value until it is fully sorted.
+*/
 #include "sorting/insertion_sort.h"
 
 void InsertionSort::run(std::vector<int>& m_arr)

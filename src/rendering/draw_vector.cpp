@@ -19,6 +19,7 @@ void drawVector(std::vector<int>& arr, const VisualState& state, sf::RenderWindo
         bool isAnimating = false;
         bool isTargetofAnimation = false;
 
+        // Loop through all animations & show animation on screen.
         for (const auto& anim : state.activeAnimations)
         {
             if (i == anim.fromA)
