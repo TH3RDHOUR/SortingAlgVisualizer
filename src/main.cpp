@@ -51,7 +51,6 @@ int main()
     bool sortedEver = false;
 
     // Sorting Algorithms.
-    static const char* algs[] = {"Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort", "Quick Sort"};
     static int selectedAlg = 0;
 
     // Size of vector.
@@ -74,7 +73,7 @@ int main()
     initVector(arr, gen, state);
 
     // Initial state of object based on first algorithm choice.
-    std::unique_ptr<SortAlgorithm> alg = createAlgorithm(0);
+    std::unique_ptr<SortAlgorithm> alg = algorithms[0].create();
 
     sf::Clock deltaClock;
 
@@ -116,7 +115,16 @@ int main()
         ImGui::Text("Current slider value: %.3f", speed);
 
         // Dropdown Algorithm Selector
-        ImGui::Combo("Sorting Algorithm", &selectedAlg, algs, IM_ARRAYSIZE(algs));
+        ImGui::Combo("Sorting Algorithm", &selectedAlg,
+        [](void* data, int idx, const char** out_text)
+        {
+            const AlgorithmInfo* algs = static_cast<AlgorithmInfo*>(data);
+            *out_text = algs[idx].name;
+            return true;
+        },
+        (void*)algorithms,
+        getNumAlgs()
+        );
 
         // Sort Button to initiate teh selected algorithm.
         if (ImGui::Button("Sort"))
@@ -136,7 +144,8 @@ int main()
             std::vector<int> workingArr = arr;
 
             // Recreate algorithm. 
-            alg = createAlgorithm(selectedAlg);
+            //alg = createAlgorithm(selectedAlg);
+            alg = algorithms[selectedAlg].create();
 
             // Set Callback before running algorithm.
             alg->onEvent = [&](const SortEvent& event)
@@ -171,7 +180,8 @@ int main()
             initVector(arr, gen, state);
 
             // Recreate algorithm.
-            alg = createAlgorithm(selectedAlg);
+            //alg = createAlgorithm(selectedAlg);
+            alg = algorithms[selectedAlg].create();
 
             // Reset flags.
             sorting = false;
@@ -193,7 +203,25 @@ int main()
         // Algorithm Information window.
         ImGui::Begin("Big O Notation");
 
+        // Get all the information on the selected algorithm in combobox.
+        const AlgorithmInfo& info = algorithms[selectedAlg];
 
+        ImGui::Text("%s", info.name);
+        ImGui::Separator();
+
+        ImGui::TextWrapped("%s", info.description);
+
+        ImGui::Spacing();
+
+        ImGui::Text("Best:    %s", info.bestCase);
+        ImGui::Text("Average: %s", info.avgCase);
+        ImGui::Text("Worst:   %s", info.worstCase);
+        ImGui::Text("Space:   %s", info.spaceComp);
+
+        ImGui::Spacing();
+
+        ImGui::Text("Stable:   %s", info.stable ? "Yes" : "No");
+        ImGui::Text("In-Place: %s", info.inPlace ? "Yes" : "No");
 
         ImGui::End();
 
