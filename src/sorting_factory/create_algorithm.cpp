@@ -3,6 +3,7 @@
 #include "sorting/selection_sort.h"
 #include "sorting/insertion_sort.h"
 #include "sorting/merge_sort.h"
+#include "sorting/quick_sort.h"
 
 std::unique_ptr<SortAlgorithm> createBubble()
 {
@@ -24,10 +25,10 @@ std::unique_ptr<SortAlgorithm> createMerge()
     return std::make_unique<MergeSort>();
 }
 
-// std::unique_ptr<SortAlgorithm> createQuick()
-// {
-//     return std::make_unique<QuickSort>();
-// }
+std::unique_ptr<SortAlgorithm> createQuick()
+{
+    return std::make_unique<QuickSort>();
+}
 
 const AlgorithmInfo algorithms[] = 
 {
@@ -64,7 +65,7 @@ const AlgorithmInfo algorithms[] =
         "Quicksort is a fast, general-purpose sorting algorithm that uses a divide-and-conquer approach to sort elements by partitioning them around a pivot value.",
         "O(n log n)", "O(n log n)", "O(n²)", "O(log n)",
         false, true,
-        //createQuick
+        createQuick
     }
 };
 
