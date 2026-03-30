@@ -200,11 +200,11 @@ int main()
 
         ImGui::End();
 
+        // For sizing the algorithm info window.
         float leftWidth = 320.f;
         float spacing = 10.0f;
-
         float rightX = 10.0f + leftWidth + spacing;
-        float rightWidth = window.getSize().x - rightX - 10.0f;
+        float rightWidth = window.getSize().x - rightX - 100.0f;
 
         // Set window position based on first ImGui window.
         ImGui::SetNextWindowPos(ImVec2(rightX, 10), ImGuiCond_Always);
@@ -260,20 +260,23 @@ int main()
         ImGui::End();
 
         // Animation timing variables.
-        float deltaTime = dt.asSeconds();
+        float deltaTime = dt.asSeconds(); // Time since last frame.
         stepDelay = 1.0f / speed;
         state.swapSpeed = speed / 10.0f;
 
         // Main sorting logic.
         if (sorting)
         {
+            // Time accumulation for proper animations.
             timer += deltaTime;
 
+            // Loop over every event using stepDelay with timer to control the time elapsed.
             while (timer >= stepDelay && !eventQueue.empty())
             {
+                // If not active animations to prevent overlapping animations.
                 if (state.activeAnimations.empty())
                 {
-                    // Reset all bars visually that are not marked as sorted.
+                    // Reset all bars visually that are either comparing or a key role.
                     state.resetNonSorted(arr.size());
 
                     // Operation object to be visualized.
@@ -363,6 +366,7 @@ int main()
                     state.markKey(state.keyIndex, arr[state.keyIndex]);
                 }
 
+                // Decrement timer, (i.e time has progressed)
                 timer -= stepDelay;
             }
 
@@ -380,15 +384,16 @@ int main()
             }
         }
 
-        // Update all ongoing animations.
+        // Update all ongoing animations using the iterator it (not an index).
         for (auto it = state.activeAnimations.begin(); it != state.activeAnimations.end(); )
         {
+            // Progress from 0.0 to 1.0 at a speed.
             it->progress += deltaTime * state.swapSpeed;
 
+            // If animation is complete
             if (it->progress >= 1.0f)
             {
                 // Apply final state
-
                 // A always moves
                 arr[it->toA] = it->valueA;
 
@@ -398,8 +403,10 @@ int main()
                     arr[it->toB] = it->valueB;
                 }
 
+                // Cleanup animation state.
                 state.movingFromIndex = -1;
 
+                // Remove finished animation (don't iterate it).
                 it = state.activeAnimations.erase(it);
             }
             else
