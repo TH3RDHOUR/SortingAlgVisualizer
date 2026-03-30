@@ -103,19 +103,21 @@ int main()
         // Update ImGui.
         ImGui::SFML::Update(window, dt);
 
-        // Set ImGui Window size and position.
-        ImGui::SetNextWindowSize(ImVec2(400, 0), ImGuiCond_FirstUseEver);
+        // Set ImGui Window position & size.
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(320, 0), ImGuiCond_Always);
 
         // Build ImGui UI (including the slider)
-        ImGui::Begin("Sorting Speed Controller"); // Start a new ImGui window
+        ImGui::Begin("Sorting Controls"); // Start a new ImGui window
 
-        // Add the slider widget
-        ImGui::SliderFloat("Sort Speed (ops/sec)", &speed, 1.0f, 500.0f);
-        ImGui::Text("Current slider value: %.3f", speed);
+        // Add the slider widget for sort speed.
+        ImGui::SliderFloat("Speed", &speed, 1.0f, 500.0f);
 
-        // Dropdown Algorithm Selector
-        ImGui::Combo("Sorting Algorithm", &selectedAlg,
+        ImGui::Spacing();
+
+        ImGui::Text("Algorithm");
+        // Dropdown Algorithm Selector using lambda to fill in values.
+        ImGui::Combo("##Algorithm", &selectedAlg,
         [](void* data, int idx, const char** out_text)
         {
             const AlgorithmInfo* algs = static_cast<AlgorithmInfo*>(data);
@@ -125,6 +127,8 @@ int main()
         (void*)algorithms,
         getNumAlgs()
         );
+
+        ImGui::Spacing();
 
         // Sort Button to initiate teh selected algorithm.
         if (ImGui::Button("Sort"))
@@ -196,9 +200,15 @@ int main()
 
         ImGui::End();
 
-        ImGui::SetNextWindowPos(ImVec2(firstPos.x + firstSize.x + 10, firstPos.y), ImGuiCond_Always);
-        // Set ImGui Window size.
-        ImGui::SetNextWindowSize(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+        float leftWidth = 320.f;
+        float spacing = 10.0f;
+
+        float rightX = 10.0f + leftWidth + spacing;
+        float rightWidth = window.getSize().x - rightX - 10.0f;
+
+        // Set window position based on first ImGui window.
+        ImGui::SetNextWindowPos(ImVec2(rightX, 10), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(rightWidth, 0), ImGuiCond_Always);
 
         // Algorithm Information window.
         ImGui::Begin("Big O Notation");
@@ -209,17 +219,41 @@ int main()
         ImGui::Text("%s", info.name);
         ImGui::Separator();
 
+        float wrapWidth = ImGui::GetContentRegionAvail().x;
+
+        // Description block.
+        ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrapWidth);
         ImGui::TextWrapped("%s", info.description);
+        ImGui::PopTextWrapPos();
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::BeginTable("Complexity", 2, ImGuiTableFlags_Borders))
+        {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0); ImGui::Text("Best");
+            ImGui::TableSetColumnIndex(1); ImGui::Text("%s", info.bestCase);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0); ImGui::Text("Average");
+            ImGui::TableSetColumnIndex(1); ImGui::Text("%s", info.avgCase);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0); ImGui::Text("Worst");
+            ImGui::TableSetColumnIndex(1); ImGui::Text("%s", info.worstCase);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0); ImGui::Text("Space");
+            ImGui::TableSetColumnIndex(1); ImGui::Text("%s", info.spaceComp);
+
+            ImGui::EndTable();
+        }
 
         ImGui::Spacing();
 
-        ImGui::Text("Best:    %s", info.bestCase);
-        ImGui::Text("Average: %s", info.avgCase);
-        ImGui::Text("Worst:   %s", info.worstCase);
-        ImGui::Text("Space:   %s", info.spaceComp);
-
-        ImGui::Spacing();
-
+        // Properties.
         ImGui::Text("Stable:   %s", info.stable ? "Yes" : "No");
         ImGui::Text("In-Place: %s", info.inPlace ? "Yes" : "No");
 
