@@ -11,6 +11,7 @@ enum class BarRole
 {
     Default,
     Comparing,
+    Swapping,
     Sorted,
     Pivot,
     Key,
@@ -78,7 +79,7 @@ struct VisualState
         for (int i = 0; i < size; i++)
         {
             // Only reset temporary visual properties.
-            if (roles[i] == BarRole::Comparing || roles[i] == BarRole::Key)
+            if (roles[i] == BarRole::Comparing || roles[i] == BarRole::Key || roles[i] == BarRole::Swapping)
             {
                 roles[i] = BarRole::Default;
             }
@@ -103,6 +104,15 @@ struct VisualState
             roles[index1] = BarRole::Comparing;
         if (index2 < roles.size() && roles[index2] != BarRole::Sorted) 
             roles[index2] = BarRole::Comparing;
+    }
+
+    // Mark the bars during a swap to not lose coloring.
+    void markSwapping(int index1, int index2)
+    {
+        if (index1 < roles.size() && roles[index1] != BarRole::Sorted)
+            roles[index1] = BarRole::Swapping;
+        if (index2 < roles.size() && roles[index2] != BarRole::Sorted)
+            roles[index2] = BarRole::Swapping;
     }
 
     // Mark the bar as sorted

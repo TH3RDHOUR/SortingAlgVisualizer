@@ -294,6 +294,7 @@ int main()
                             break;
 
                         case OpType::Swap:
+                            state.markSwapping(event.a, event.b);
                             state.activeAnimations.push_back({
                                 event.a, event.b,
                                 event.b, event.a,
